@@ -21,6 +21,7 @@
 *.i*86
 *.x86_64
 *.hex
+arcanoid
 
 # Directories for development
 /Debug
@@ -37,3 +38,5 @@
 *.zip
 *.vcxproj
 *.filters
+*~
+
