@@ -21,3 +21,19 @@
 *.i*86
 *.x86_64
 *.hex
+
+# Directories for development
+/Debug
+/Release
+/game
+
+
+#VS project files:
+*.aps
+*.opensdf
+*.sdf
+*.sln
+*.suo
+*.zip
+*.vcxproj
+*.filters
