@@ -1,56 +1,50 @@
 #include "brick.h"
 
 
-Brick brick_create(BrickKind kind, int xPosition, int yPosition, GameMedia *media)
+Brick* brick_create(BrickKind kind, int xPosition, int yPosition, GameMedia *media)
 {
-	Brick newBrick;
+	Brick *brick = NULL;
+	brick = (Brick *) malloc(sizeof(Brick));
+	if (brick == NULL)
+	{
+		printf("error allocating memory for brick\n");
+		return brick;
+	}
+	brick->rect.x = xPosition;
+	brick->rect.y = yPosition;
+	brick->rect.w = BRICK_WIDTH;
+	brick->rect.h = BRICK_HEIGHT;
 	switch (kind)
 	{
 	case BRICK_NORMAL:
-		newBrick.kind = BRICK_NORMAL;
-		newBrick.live = 1;
-		newBrick.rect.x = xPosition;
-		newBrick.rect.y = yPosition;
-		newBrick.rect.w = 50;
-		newBrick.rect.h = 25;
+		brick->kind = BRICK_NORMAL;
+		brick->live = 1;
 		break;
 	case BRICK_DUAL:
-		newBrick.kind = BRICK_DUAL;
-		newBrick.live = 2;
-		newBrick.rect.x = xPosition;
-		newBrick.rect.y = yPosition;
-		newBrick.rect.w = 50;
-		newBrick.rect.h = 25;
+		brick->kind = BRICK_DUAL;
+		brick->live = 2;
 		break;
 	case BRICK_TRIPLE:
-		newBrick.kind = BRICK_TRIPLE;
-		newBrick.live = 3;
-		newBrick.rect.x = xPosition;
-		newBrick.rect.y = yPosition;
-		newBrick.rect.w = 50;
-		newBrick.rect.h = 25;
+		brick->kind = BRICK_TRIPLE;
+		brick->live = 3;
 		break;
 	case BRICK_SUPERMAN:
-		newBrick.kind = BRICK_SUPERMAN;
-		newBrick.live = 0;
-		newBrick.rect.x = xPosition;
-		newBrick.rect.y = yPosition;
-		newBrick.rect.w = 50;
-		newBrick.rect.h = 25;
+		brick->kind = BRICK_SUPERMAN;
+		brick->live = 9;
 		break;	
 	case BRICK_NONE:
 	default:
-		newBrick.kind = BRICK_NONE;
-		newBrick.live = 0;
-		newBrick.rect.x = xPosition;
-		newBrick.rect.y = yPosition;
-		newBrick.rect.w = 50;
-		newBrick.rect.h = 25;
+		brick->kind = BRICK_NONE;
+		brick->live = 0;
 		break;
 	}
+	return brick;
+}
 
-	return newBrick;
-
+void brick_destroy(Brick *brick)
+{
+	free(brick);
+	brick = NULL;
 }
 
 

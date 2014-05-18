@@ -4,6 +4,9 @@
 #include <SDL2/SDL.h>
 #include "media.h"
 
+#define BRICK_HEIGHT 25
+#define BRICK_WIDTH 50
+
 
 typedef enum BrickKind{
 	BRICK_NONE,
@@ -22,15 +25,23 @@ typedef struct Brick{
 
 
 /*
-Creates a brick of special kind at given position
+creates a brick of special kind at given position
 */
-Brick brick_create(BrickKind kind, int xPosition, int yPosition, GameMedia *media);
+Brick* brick_create(BrickKind kind, int xPosition, int yPosition, GameMedia *media);
 
 /*
-Draws the brick on the screen
+destroys a brick
+*/
+void brick_destroy(Brick *brick);
+
+/*
+draws the brick on the screen
 */
 void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media);
 
+/*
+updates the brick after a collision
+*/
 void brick_collided(Brick *brick);
 
 

@@ -13,17 +13,96 @@
 #include "level.h"
 
 
-//functions prototypes
+
+/* window dimensions */
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 768
+
+
+typedef enum GameStatus{
+	GAME_START,
+	GAME_PAUSE,
+	GAME_RUNNING,
+	GAME_END,
+	GAME_EXIT
+}GameStatus;
+
+
+typedef struct GameSDLSetup{
+	SDL_Window *window;
+	SDL_Renderer *renderer;
+	SDL_Event event;
+	int width;
+	int height;
+}GameSDLSetup;
+
+
+typedef struct Game{
+	GameSDLSetup *gameSetup;
+	Level *level;
+	Player *player;
+	Ball *ball;
+	GameStatus status;
+}Game;
+
+/*
+creates a GameSDLSetup
+*/
+GameSDLSetup* game_setup_create(void);
+
+
+/*
+destroys a GameSDLSetup
+*/
+void game_setup_destroy(GameSDLSetup* gameSetup);
+
+/*
+creates a game
+*/
+Game* game_create(GameSDLSetup *gameSetup);
+
+/*
+destroys a game
+*/
+void game_destroy(Game *game);
+
+
+/*
+inits game environement
+*/
 int game_init(void);
+
+/*
+cleans up all media, and quit subsystems
+*/
 void game_close(void);
 
+/*
+loads all media required for game to run
+*/
 int game_media_load(void);
 
+/*
+main game loop, runs until user exits
+*/
 void game_loop(void);
 
+/*
+updates ball position and check collisions
+should be in ball "class"
+*/
 void ball_update(Ball *ball);
 
+/*
+resets game to default values for a restart
+*/
 void game_reset(void);
+
+/*
+pauses game
+*/
+void game_pause(Game *game);
+
 
 #endif
 

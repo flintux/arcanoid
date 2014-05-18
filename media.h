@@ -23,28 +23,25 @@ typedef struct GameMedia{
 	TTF_Font *font;
 }GameMedia;
 
-/*const GameMedia GAME_MEDIA_DEFAULT = {
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-	NULL,
-};*/
 
+/*
+loads an image to a texture
+*/
 SDL_Texture* media_load_image(SDL_Renderer* gameRenderer, char *path);
 
+/*
+creates a texture based on input text and font
+*/
 SDL_Texture* media_load_text(SDL_Renderer* gameRenderer, TTF_Font *gameFont, char *text);
 
-GameMedia media_load(SDL_Renderer *gameRenderer);
+/*
+loads all media (pictures, fonts and music need by the game)
+*/
+GameMedia* media_load(SDL_Renderer *gameRenderer);
 
+/*
+destroys all media loaded my media_load
+*/
 void media_close(GameMedia *media);
 
 

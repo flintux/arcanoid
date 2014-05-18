@@ -4,11 +4,13 @@
 /*																			*/
 /****************************************************************************/
 
-#include "game.h"
+#include "arcanoid.h"
 
 
 int main(int argc, char* args[])
 {
+
+
 	//Initialize everything and launch game if all ok
 	if (game_init() && game_media_load())
 	{
