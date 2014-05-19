@@ -62,67 +62,56 @@ GameMedia* media_load(SDL_Renderer *gameRenderer)
 		printf("error allocating memory for media\n");
 		return media;
 	}
-
 	media->background = media_load_image(gameRenderer, "media/background_640_480.png");
 	if (media->background == NULL)
 	{
 		printf("Failed to load background image!\n");
 	}
-
 	media->player = media_load_image(gameRenderer, "media/bar_80_20.png");
 	if (media->player == NULL)
 	{
 		printf("Failed to load player image!\n");
 	}
-	
 	media->ball = media_load_image(gameRenderer, "media/ball_15.png");
 	if (media->ball == NULL)
 	{
 		printf("Failed to load ball image!\n");
 	}
-	
 	media->brickNormal = media_load_image(gameRenderer, "media/brick_normal.png");
 	if (media->brickNormal == NULL)
 	{
 		printf("Failed to load brick image!\n");
 	}
-	
 	media->brickDualOne = media_load_image(gameRenderer, "media/brick_dual_one.png");
 	if (media->brickDualOne == NULL)
 	{
 		printf("Failed to load brickDualOne image!\n");
 	}
-
 	media->brickDualTwo = media_load_image(gameRenderer, "media/brick_dual_two.png");
 	if (media->brickDualTwo == NULL)
 	{
 		printf("Failed to load brickDualTwo image!\n");
 	}
-
 	media->brickTripleOne = media_load_image(gameRenderer, "media/brick_triple_one.png");
 	if (media->brickTripleOne == NULL)
 	{
 		printf("Failed to load brickTripleOne image!\n");
 	}
-
 	media->brickTripleTwo = media_load_image(gameRenderer, "media/brick_triple_two.png");
 	if (media->brickTripleTwo == NULL)
 	{
 		printf("Failed to load brickTripleTwo image!\n");
 	}
-
 	media->brickTripleThree = media_load_image(gameRenderer, "media/brick_triple_three.png");
 	if (media->brickTripleThree == NULL)
 	{
 		printf("Failed to load brickTripleThree image!\n");
 	}
-
 	media->brickSuperman = media_load_image(gameRenderer, "media/brick_superman.png");
 	if (media->brickSuperman == NULL)
 	{
 		printf("Failed to load brickSuperman image!\n");
 	}
-
 	media->font = TTF_OpenFont("media/thickhea.ttf", 36);
 	if (media->font == NULL)
 	{
@@ -132,7 +121,6 @@ GameMedia* media_load(SDL_Renderer *gameRenderer)
 	{
 		media->textGameOver = media_load_text(gameRenderer, media->font, "Game Over, Loulou t'es null!!!");
 	}
-
 	media->music = Mix_LoadMUS("media/music.ogg");
 	if (media->music == NULL)
 	{

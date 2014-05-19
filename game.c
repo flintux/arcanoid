@@ -127,10 +127,10 @@ int game_init(void)
 			else
 			{
 				/* init the renderer color for clearing screen */
-				SDL_SetRenderDrawColor(gameSetup->renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetRenderDrawColor(gameSetup->renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
 
 				/* init image loadig with PNG */
-				int imgFlags = IMG_INIT_PNG;
+				int imgFlags = (IMG_INIT_PNG | IMG_INIT_JPG);
 				if (!(IMG_Init(imgFlags) & imgFlags))
 				{
 					printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
@@ -242,14 +242,20 @@ void ball_update(Ball *ball)
 	{
 		if (game->player->lifes > 0)
 		{
+			SDL_Delay(500);
 			game->player->lifes--;
 			game->status = GAME_START;
 			player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
+			ball_destroy(ball);
+			ball = ball_create(media);
+			game->ball = ball;
 			ball_position(ball, gameSetup->width / 2 - ball->ballRect.w / 2, game->player->playerRect.y - ball->ballRect.h);
+			return;
 		}
 		else
 		{
 			game->status = GAME_END;
+			return;
 		}
 	}
 	ball_check_player_collision(ball, game->player);
@@ -334,11 +340,12 @@ void game_reset(void)
 }
 
 
-void game_loop(void){
-
+void game_loop(void)
+{
 	game_reset();
 
-	while (game->status != GAME_EXIT){
+	while (game->status != GAME_EXIT)
+	{
 		while (SDL_PollEvent(&gameSetup->event) != 0)
 		{
 			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
@@ -442,7 +449,6 @@ void game_loop(void){
 		}
 		if (game->status == GAME_START)
 		{
-			gameSetup->width;
 			player_move(game->player, game->ball, 0, gameSetup->width);
 		}
 		if (game->status == GAME_RUNNING)

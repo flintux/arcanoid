@@ -91,7 +91,8 @@ void ball_check_player_collision(Ball *ball, Player *player)
 
 	if ((ball->ballRect.y + ball->ballRect.h >= player->playerRect.y) && (ball->ballRect.y + ball->ballRect.h < player->playerRect.y + 10) && ((ball->ballRect.x + ball->ballRect.w >= player->playerRect.x) && (ball->ballRect.x <= player->playerRect.x + player->playerRect.w)))
 	{
-		if (ball->ballSpeedY > 0){	//only update if ball is going down
+		if (ball->ballSpeedY > 0) /* only if ball is going down */
+		{
 
 			float xball;
 			float xplayer;
@@ -113,7 +114,6 @@ void ball_check_player_collision(Ball *ball, Player *player)
 			}
 			if (ball->ballSpeedY > 0) ball->ballSpeedY = -ball->ballSpeedY;
 			printf("speed X: %lf\tspeed y: %lf\n", ball->ballSpeedX, ball->ballSpeedY);
-			//printf("\a");
 		}
 	}
 }

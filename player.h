@@ -54,7 +54,7 @@ moves player and ball if required
 void player_move(Player *player, Ball *ball, int ballMove, int screenWidth);
 
 /*
-places player at specified position (left cornor of player)
+places player at specified position (left upper corner of player)
 */
 void player_position(Player *player, int positionX, int positionY);
 
