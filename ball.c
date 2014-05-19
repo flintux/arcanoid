@@ -184,6 +184,13 @@ BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick)
 	}
 
 	return collision;
+}
 
+void ball_position(Ball *ball, int positionX, int positionY)
+{
+	ball->ballRect.x = positionX;
+	ball->PositionX = (float)positionX;
+	ball->ballRect.y = positionY;
+	ball->PositionY = (float)positionY;
 }
 

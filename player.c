@@ -30,8 +30,11 @@ Player* player_create(GameMedia *media)
 
 void player_destroy(Player *player)
 {
-	free(player);
-	player = NULL;
+	if (player != NULL)
+	{
+		free(player);
+		player = NULL;
+	}
 }
 
 
@@ -72,4 +75,10 @@ void player_move(Player *player, Ball *ball, int ballMove, int screenWidth)
 	}
 	/*set timer for next time*/
 	player->keyTimer = SDL_GetTicks() + player->speed;
+}
+
+void player_position(Player *player, int positionX, int positionY)
+{
+	player->playerRect.x = positionX;
+	player->playerRect.y = positionY;
 }

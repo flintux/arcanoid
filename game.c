@@ -13,13 +13,7 @@ GameMedia *media = NULL;
 
 Game *game = NULL;
 
-Ball *ball = NULL;
-
-Player* player = NULL;;
-
-Level* levelOne = NULL;
-
-
+Level* levelCurrent = NULL;
 
 GameSDLSetup* game_setup_create(void)
 {
@@ -57,13 +51,23 @@ void game_setup_destroy(GameSDLSetup* gameSetup)
 Game* game_create(GameSDLSetup *gameSetup)
 {
 	Game *game = NULL;
+	Ball *ball = NULL;
+	Player* player = NULL;
+
 	game = (Game *)malloc(sizeof(Game));
 	if (game == NULL)
 	{
 		printf("error cannot allocate game memory\n");
 		return game;
 	}
+	game->gameSetup = gameSetup;
 	game->status = GAME_START;
+
+	game->player = player_create(media);
+	player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
+
+	game->ball = ball_create(media);
+	ball_position(game->ball, gameSetup->width / 2 - game->ball->ballRect.w / 2, game->player->playerRect.y - game->ball->ballRect.h);
 
 	return game;
 }
@@ -72,6 +76,10 @@ void game_destroy(Game *game)
 {
 	if (game != NULL)
 	{
+		ball_destroy(game->ball);
+		game->ball = NULL;
+		player_destroy(game->player);
+		game->player = NULL;
 		free(game);
 		game = NULL;
 	}
@@ -155,17 +163,11 @@ closes all inited SDL functions
 */
 void game_close(void)
 {
-	ball_destroy(ball);
-
-	player_destroy(player);
-
-	level_destroy(levelOne);
+	level_destroy(levelCurrent);
 
 	game_destroy(game);
 
 	media_close(media);
-
-	//Destroy window
 
 	game_setup_destroy(gameSetup);
 
@@ -188,7 +190,6 @@ int game_media_load(void)
 	{
 		return 0;
 	}
-
 	if (media->player == NULL)
 	{
 		printf("Failed to load player image!\n");
@@ -199,13 +200,11 @@ int game_media_load(void)
 		printf("Failed to load background image!\n");
 		return 0;
 	}
-	
 	if (media->ball == NULL)
 	{
 		printf("Failed to load ball image!\n");
 		return 0;
 	}
-
 	if (media->music == NULL)
 	{
 		printf("Could not load music for game! %s", Mix_GetError());
@@ -219,13 +218,11 @@ int game_media_load(void)
 		printf("starting music, press S to pause/resume\n");
 		Mix_PlayMusic(media->music, -1);
 	}
-
 	if (media->font == NULL)
 	{
 		printf("Could not load font! Error: %s\n", TTF_GetError());
 		return 0;
 	}
-
 	return 1;
 }
 
@@ -241,24 +238,32 @@ void ball_update(Ball *ball)
 	{
 		return;
 	}
-
-	if ((ball_check_wall_collision(ball, gameSetup->width, gameSetup->height)) == COLLISION_SIDE_BOTTOM){
-		game->status = GAME_END;
+	if ((ball_check_wall_collision(ball, gameSetup->width, gameSetup->height)) == COLLISION_SIDE_BOTTOM)
+	{
+		if (game->player->lifes > 0)
+		{
+			game->player->lifes--;
+			game->status = GAME_START;
+			player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
+			ball_position(ball, gameSetup->width / 2 - ball->ballRect.w / 2, game->player->playerRect.y - ball->ballRect.h);
+		}
+		else
+		{
+			game->status = GAME_END;
+		}
 	}
-
-	ball_check_player_collision(ball, player);
-
+	ball_check_player_collision(ball, game->player);
 	if (ball->ballSpeedY > 0)
 	{
-		for (line = 0; line < levelOne->lines && !(collision); line++)
+		for (line = 0; line < levelCurrent->lines && !(collision); line++)
 		{
 			if (ball->ballSpeedX > 0)
 			{
-				for (row = 0; row < levelOne->rows && !(collision); row++)
+				for (row = 0; row < levelCurrent->rows && !(collision); row++)
 				{
-					if (ball_check_brick_collision(ball, levelOne->wall[line][row]) != COLLISION_SIDE_NONE)
+					if (ball_check_brick_collision(ball, levelCurrent->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(levelOne->wall[line][row]);
+						brick_collided(levelCurrent->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 						break;
@@ -267,11 +272,11 @@ void ball_update(Ball *ball)
 			}
 			else
 			{
-				for (row = levelOne->rows - 1; row >= 0 && !(collision); row--)
+				for (row = levelCurrent->rows - 1; row >= 0 && !(collision); row--)
 				{
-					if (ball_check_brick_collision(ball, levelOne->wall[line][row]) != COLLISION_SIDE_NONE)
+					if (ball_check_brick_collision(ball, levelCurrent->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(levelOne->wall[line][row]);
+						brick_collided(levelCurrent->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -281,16 +286,16 @@ void ball_update(Ball *ball)
 	}
 	else
 	{
-		for (line = levelOne->lines - 1; line >= 0 && !(collision); line--)
+		for (line = levelCurrent->lines - 1; line >= 0 && !(collision); line--)
 		{
 			if (ball->ballSpeedX > 0)
 			{
 
-				for (row = 0; row < levelOne->rows && !(collision); row++)
+				for (row = 0; row < levelCurrent->rows && !(collision); row++)
 				{
-					if (ball_check_brick_collision(ball, levelOne->wall[line][row]) != COLLISION_SIDE_NONE)
+					if (ball_check_brick_collision(ball, levelCurrent->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(levelOne->wall[line][row]);
+						brick_collided(levelCurrent->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -298,11 +303,11 @@ void ball_update(Ball *ball)
 			}
 			else
 			{
-				for (row = levelOne->rows - 1; row >= 0 && !(collision); row--)
+				for (row = levelCurrent->rows - 1; row >= 0 && !(collision); row--)
 				{
-					if (ball_check_brick_collision(ball, levelOne->wall[line][row]) != COLLISION_SIDE_NONE)
+					if (ball_check_brick_collision(ball, levelCurrent->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(levelOne->wall[line][row]);
+						brick_collided(levelCurrent->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -317,24 +322,15 @@ void ball_update(Ball *ball)
 
 void game_reset(void)
 {
-
 	game_destroy(game);
 	game = game_create(gameSetup);
 
-	level_destroy(levelOne);
-	levelOne = level_create_random(1, 24, 20, media);
-
-	player_destroy(player);
-	player = player_create(media);
-	player->playerRect.x = gameSetup->width / 2 - player->playerRect.w / 2;
-	player->playerRect.y = gameSetup->height - 40 - player->playerRect.h;
-
-	ball_destroy(ball);
-	ball = ball_create(media);
-	ball->ballRect.x = gameSetup->width / 2 - ball->ballRect.w / 2;
-	ball->PositionX = (float)ball->ballRect.x;
-	ball->ballRect.y = gameSetup->height - 40 - player->playerRect.h - ball->ballRect.h;
-	ball->PositionY = (float)ball->ballRect.y;
+	level_destroy(levelCurrent);
+	levelCurrent = level_load_file("levels/level.txt", gameSetup->renderer, media);
+	if (!levelCurrent)
+	{
+		levelCurrent = level_create_random(1, 24, 20, media);
+	}
 }
 
 
@@ -343,7 +339,6 @@ void game_loop(void){
 	game_reset();
 
 	while (game->status != GAME_EXIT){
-
 		while (SDL_PollEvent(&gameSetup->event) != 0)
 		{
 			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
@@ -356,17 +351,17 @@ void game_loop(void){
 
 				if (currentKeyStates[SDL_SCANCODE_RIGHT] && currentKeyStates[SDL_SCANCODE_LEFT])
 				{
-					player->direction = DIRECTION_NONE; // if also RIGHT key is pressed don't move
+					game->player->direction = DIRECTION_NONE; // if also RIGHT key is pressed don't move
 				}
 				else
 				{
 					if (currentKeyStates[SDL_SCANCODE_LEFT])
 					{
-						player->direction = DIRECTION_LEFT;
+						game->player->direction = DIRECTION_LEFT;
 					}
 					else if (currentKeyStates[SDL_SCANCODE_RIGHT])
 					{
-						player->direction = DIRECTION_RIGHT;
+						game->player->direction = DIRECTION_RIGHT;
 					}
 				}
 				if (currentKeyStates[SDL_SCANCODE_SPACE])
@@ -390,12 +385,13 @@ void game_loop(void){
 				}
 				if (currentKeyStates[SDL_SCANCODE_R])
 				{
+					/*for (int test = 0; test < 100; test++)  used for testing memory leak*/
 					if (game->status == GAME_END)
 					{
 						game_reset();
 					}
 				}
-				if (currentKeyStates[SDL_SCANCODE_S])
+				if (currentKeyStates[SDL_SCANCODE_S] && gameSetup->event.key.repeat == 0)
 				{
 					if (Mix_PlayingMusic() == 0)
 					{
@@ -419,41 +415,40 @@ void game_loop(void){
 					newLevel = level_load_file("levels/level.txt", gameSetup->renderer, media);
 					if (newLevel != NULL)
 					{
-						level_destroy(levelOne);
-						levelOne = newLevel;
+						level_destroy(levelCurrent);
+						levelCurrent = newLevel;
 					}
 				}
 			}
 			else if (gameSetup->event.type == SDL_KEYUP)
 			{
-				player->direction = DIRECTION_NONE;
+				game->player->direction = DIRECTION_NONE;
 				if (currentKeyStates[SDL_SCANCODE_RIGHT] && currentKeyStates[SDL_SCANCODE_LEFT])
 				{
-					player->direction = DIRECTION_NONE;
+					game->player->direction = DIRECTION_NONE;
 				}
 				else
 				{
 					if (currentKeyStates[SDL_SCANCODE_LEFT])
 					{
-						player->direction = DIRECTION_LEFT;
+						game->player->direction = DIRECTION_LEFT;
 					}
 					else if (currentKeyStates[SDL_SCANCODE_RIGHT])
 					{
-						player->direction = DIRECTION_RIGHT;
+						game->player->direction = DIRECTION_RIGHT;
 					}
 				}
 			}
 		}
-
 		if (game->status == GAME_START)
 		{
 			gameSetup->width;
-			player_move(player, ball, 0, gameSetup->width);
+			player_move(game->player, game->ball, 0, gameSetup->width);
 		}
 		if (game->status == GAME_RUNNING)
 		{
-			ball_update(ball);
-			player_move(player, ball, 1, gameSetup->width);
+			ball_update(game->ball);
+			player_move(game->player, game->ball, 1, gameSetup->width);
 		}
 
 		/* clear screen */
@@ -463,13 +458,23 @@ void game_loop(void){
 		SDL_RenderCopy(gameSetup->renderer, media->background, NULL, NULL);
 
 		/* render level */
-		level_draw(levelOne, gameSetup->renderer, media);
+		level_draw(levelCurrent, gameSetup->renderer, media);
+
+		/* draw remaining lifes */
+		for (int i = 0; i < game->player->lifes; i++)
+		{
+			SDL_Rect lifes;
+			lifes = game->ball->ballRect;
+			lifes.x = 20 + i * 20;
+			lifes.y = gameSetup->height - 30;
+			SDL_RenderCopy(gameSetup->renderer, game->ball->ball, NULL, &lifes);
+		}
 
 		/* render ball */
-		SDL_RenderCopy(gameSetup->renderer, ball->ball, NULL, &ball->ballRect);
+		SDL_RenderCopy(gameSetup->renderer, game->ball->ball, NULL, &game->ball->ballRect);
 
 		/* render player */
-		SDL_RenderCopy(gameSetup->renderer, player->sprite, NULL, &player->playerRect);
+		SDL_RenderCopy(gameSetup->renderer, game->player->sprite, NULL, &game->player->playerRect);
 
 		/* render game over */
 		if (game->status == GAME_END)

@@ -85,4 +85,9 @@ checks if ball touched brick and changes ball speed accordingly.
 BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick);
 
 
+/*
+places ball at given position (top left corner of ball)
+*/
+void ball_position(Ball *ball, int positionX, int positionY);
+
 #endif
