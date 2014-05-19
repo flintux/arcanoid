@@ -127,13 +127,19 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		switch (readChar)
 		{
 		case '\n':
+			/* check if all rows are filled */
+			for (row; row < LEVEL_ROW_MAX;row++)
+			{
+				kind = BRICK_NONE;
+				level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
+			}
 			line++;
 			row = 0;
 			break;
 		case '0':
 			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
 			{
-				printf("too many lines or rows in file, skipping");
+				printf("too many lines or rows in file, skipping\n");
 				break;
 			}
 			kind = BRICK_NONE;
@@ -143,7 +149,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		case '1':
 			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
 			{
-				printf("too many lines or rows in file, skipping");
+				printf("too many lines or rows in file, skipping\n");
 				break;
 			}
 			kind = BRICK_NORMAL;
@@ -153,7 +159,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		case '2':
 			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
 			{
-				printf("too many lines or rows in file, skipping");
+				printf("too many lines or rows in file, skipping\n");
 				break;
 			}
 			kind = BRICK_DUAL;
@@ -163,7 +169,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		case '3':
 			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
 			{
-				printf("too many lines or rows in file, skipping");
+				printf("too many lines or rows in file, skipping\n");
 				break;
 			}
 			kind = BRICK_TRIPLE;
@@ -173,7 +179,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		case '9':
 			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
 			{
-				printf("too many lines or rows in file, skipping");
+				printf("too many lines or rows in file, skipping\n");
 				break;
 			}
 			kind = BRICK_SUPERMAN;
@@ -186,6 +192,16 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		}
 	}
 
+	/* check if all lines are filled */
+	for (line; line < LEVEL_LINE_MAX; line++)
+	{
+		for (row = 0; row < LEVEL_ROW_MAX; row++)
+		{
+			kind = BRICK_NONE;
+			level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
+		}
+
+	}
 	level->rows = LEVEL_ROW_MAX;
 	level->lines = LEVEL_LINE_MAX;
 
