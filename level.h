@@ -9,6 +9,7 @@
 
 #define LEVEL_ROW_MAX 20
 #define LEVEL_LINE_MAX 24
+#define LEVEL_SPEED_FACTOR 1
 
 
 typedef struct Level{
@@ -34,6 +35,11 @@ void level_destroy(Level *level);
 draws the bricks on the screen
 */
 void level_draw(Level *level, SDL_Renderer * renderer, GameMedia* media);
+
+/*
+load a level from a file
+*/
+Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media);
 
 #endif
 

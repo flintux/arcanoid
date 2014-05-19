@@ -42,16 +42,15 @@ GameSDLSetup* game_setup_create(void)
 
 void game_setup_destroy(GameSDLSetup* gameSetup)
 {
-	if (gameSetup == NULL)
+	if (gameSetup != NULL)
 	{
-		return;
+		SDL_DestroyRenderer(gameSetup->renderer);
+		gameSetup->renderer = NULL;
+		SDL_DestroyWindow(gameSetup->window);
+		gameSetup->window = NULL;
+		free(gameSetup);
+		gameSetup = NULL;
 	}
-	SDL_DestroyRenderer(gameSetup->renderer);
-	gameSetup->renderer = NULL;
-	SDL_DestroyWindow(gameSetup->window);
-	gameSetup->window = NULL;
-	free(gameSetup);
-	gameSetup = NULL;
 }
 
 
@@ -141,7 +140,7 @@ int game_init(void)
 					printf("SDL_ttf could not be loaded! Error: %s\n", TTF_GetError());
 					return 0;
 				}
-				//SDL_ShowCursor(0);
+				SDL_ShowCursor(0);
 			}
 		}
 	}
@@ -238,18 +237,12 @@ void ball_update(Ball *ball)
 	int row = 0;
 	int collision = 0;
 
-	/*
-	if (!ballMove)
-	{
-		return;
-	}
-	*/
 	if (!(ball->timer < SDL_GetTicks())) /* is it time to move ? */
 	{
 		return;
 	}
 
-	if ((ball_check_wall_collision(ball, SCREEN_WIDTH, SCREEN_HEIGHT)) == COLLISION_SIDE_BOTTOM){
+	if ((ball_check_wall_collision(ball, gameSetup->width, gameSetup->height)) == COLLISION_SIDE_BOTTOM){
 		game->status = GAME_END;
 	}
 
@@ -333,14 +326,14 @@ void game_reset(void)
 
 	player_destroy(player);
 	player = player_create(media);
-	player->playerRect.x = SCREEN_WIDTH / 2 - player->playerRect.w / 2;
-	player->playerRect.y = SCREEN_HEIGHT - 40 - player->playerRect.h; // normally not needed since player never moves on Y
+	player->playerRect.x = gameSetup->width / 2 - player->playerRect.w / 2;
+	player->playerRect.y = gameSetup->height - 40 - player->playerRect.h;
 
 	ball_destroy(ball);
 	ball = ball_create(media);
-	ball->ballRect.x = SCREEN_WIDTH / 2 - ball->ballRect.w / 2;
+	ball->ballRect.x = gameSetup->width / 2 - ball->ballRect.w / 2;
 	ball->PositionX = (float)ball->ballRect.x;
-	ball->ballRect.y = SCREEN_HEIGHT - 40 - player->playerRect.h - ball->ballRect.h;
+	ball->ballRect.y = gameSetup->height - 40 - player->playerRect.h - ball->ballRect.h;
 	ball->PositionY = (float)ball->ballRect.y;
 }
 
@@ -351,8 +344,8 @@ void game_loop(void){
 
 	while (game->status != GAME_EXIT){
 
-		while (SDL_PollEvent(&gameSetup->event) != 0){
-			//SDL_PollEvent(&gameEvent);
+		while (SDL_PollEvent(&gameSetup->event) != 0)
+		{
 			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
 			if (gameSetup->event.type == SDL_QUIT)
 			{
@@ -371,7 +364,7 @@ void game_loop(void){
 					{
 						player->direction = DIRECTION_LEFT;
 					}
-					if (currentKeyStates[SDL_SCANCODE_RIGHT])
+					else if (currentKeyStates[SDL_SCANCODE_RIGHT])
 					{
 						player->direction = DIRECTION_RIGHT;
 					}
@@ -420,13 +413,23 @@ void game_loop(void){
 						}
 					}
 				}
+				if (currentKeyStates[SDL_SCANCODE_L] && gameSetup->event.key.repeat == 0)
+				{
+					Level *newLevel = NULL;
+					newLevel = level_load_file("levels/level.txt", gameSetup->renderer, media);
+					if (newLevel != NULL)
+					{
+						level_destroy(levelOne);
+						levelOne = newLevel;
+					}
+				}
 			}
 			else if (gameSetup->event.type == SDL_KEYUP)
 			{
 				player->direction = DIRECTION_NONE;
 				if (currentKeyStates[SDL_SCANCODE_RIGHT] && currentKeyStates[SDL_SCANCODE_LEFT])
 				{
-					player->direction = DIRECTION_NONE; // if also RIGHT key is pressed don't move
+					player->direction = DIRECTION_NONE;
 				}
 				else
 				{
@@ -434,7 +437,7 @@ void game_loop(void){
 					{
 						player->direction = DIRECTION_LEFT;
 					}
-					if (currentKeyStates[SDL_SCANCODE_RIGHT])
+					else if (currentKeyStates[SDL_SCANCODE_RIGHT])
 					{
 						player->direction = DIRECTION_RIGHT;
 					}
@@ -444,42 +447,42 @@ void game_loop(void){
 
 		if (game->status == GAME_START)
 		{
-			player_move(player, ball, 0, SCREEN_WIDTH);
+			gameSetup->width;
+			player_move(player, ball, 0, gameSetup->width);
 		}
 		if (game->status == GAME_RUNNING)
 		{
 			ball_update(ball);
-			player_move(player, ball, 1, SCREEN_WIDTH);
+			player_move(player, ball, 1, gameSetup->width);
 		}
 
-		//Clear screen
+		/* clear screen */
 		SDL_RenderClear(gameSetup->renderer);
 
-		//Render background
+		/* render background */
 		SDL_RenderCopy(gameSetup->renderer, media->background, NULL, NULL);
 
-		//Render level
+		/* render level */
 		level_draw(levelOne, gameSetup->renderer, media);
 
-		//Render ball
+		/* render ball */
 		SDL_RenderCopy(gameSetup->renderer, ball->ball, NULL, &ball->ballRect);
 
-		//Render player
+		/* render player */
 		SDL_RenderCopy(gameSetup->renderer, player->sprite, NULL, &player->playerRect);
 
-		//render game over
+		/* render game over */
 		if (game->status == GAME_END)
 		{
 			SDL_Rect textRect;
 			SDL_QueryTexture(media->textGameOver, NULL, NULL, &textRect.w, &textRect.h);
-			textRect.x = (SCREEN_WIDTH - textRect.w) / 2;
+			textRect.x = (gameSetup->width - textRect.w) / 2;
 			textRect.y = 200;
 			SDL_RenderCopy(gameSetup->renderer, media->textGameOver, NULL, &textRect);
 		}
 
-		//Update screen
+		/* update screen */
 		SDL_RenderPresent(gameSetup->renderer);
-
 	}
 }
 

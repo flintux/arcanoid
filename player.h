@@ -12,7 +12,7 @@
 #define PLAYER_HEIGHT 20
 #define PLAYER_WIDTH 80
 #define PLAYER_DEFAULT_LIFES 3
-#define PLAYER_DEFAULT_SPEED 3
+#define PLAYER_DEFAULT_SPEED 2
 
 
 typedef struct Ball Ball;

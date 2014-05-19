@@ -90,3 +90,106 @@ void level_draw(Level *level, SDL_Renderer *renderer, GameMedia* media)
 		}
 	}
 }
+
+
+Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
+{
+	Level *level = NULL;
+	FILE *file = NULL;
+	int totalChars = 0;
+	int line = 0;
+	int row = 0;
+	BrickKind kind = BRICK_NONE;
+
+	int readChar;
+
+	file = fopen(path, "r");
+	if (!file)
+	{
+		printf("error loading file: %s\n", path);
+		return level;
+	}
+
+	level = (Level *)malloc(sizeof(Level));
+	if (!level)
+	{
+		printf("error allocating memory for level for %s", path);
+		fclose(file);
+		file = NULL;
+		return level;
+	}
+
+	level->number = 0;
+	level->speedFactor = LEVEL_SPEED_FACTOR;
+
+	while ((readChar = getc(file)) != EOF)
+	{
+		switch (readChar)
+		{
+		case '\n':
+			line++;
+			row = 0;
+			break;
+		case '0':
+			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			{
+				printf("too many lines or rows in file, skipping");
+				break;
+			}
+			kind = BRICK_NONE;
+			level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
+			row++;
+			break;
+		case '1':
+			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			{
+				printf("too many lines or rows in file, skipping");
+				break;
+			}
+			kind = BRICK_NORMAL;
+			level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
+			row++;
+			break;
+		case '2':
+			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			{
+				printf("too many lines or rows in file, skipping");
+				break;
+			}
+			kind = BRICK_DUAL;
+			level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
+			row++;
+			break;
+		case '3':
+			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			{
+				printf("too many lines or rows in file, skipping");
+				break;
+			}
+			kind = BRICK_TRIPLE;
+			level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
+			row++;
+			break;
+		case '9':
+			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			{
+				printf("too many lines or rows in file, skipping");
+				break;
+			}
+			kind = BRICK_SUPERMAN;
+			level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
+			row++;
+			break;
+		default:
+			printf("error, unrecognized brick kind, skipping\n");
+			break;
+		}
+	}
+
+	level->rows = LEVEL_ROW_MAX;
+	level->lines = LEVEL_LINE_MAX;
+
+	fclose(file);
+
+	return level;
+}
