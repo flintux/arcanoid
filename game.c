@@ -335,36 +335,7 @@ void game_loop(void)
 			ball_update(game->ball);
 			player_move(game->player, game->ball, 1, gameSetup->width);
 		}
-		/* clear screen */
-		SDL_RenderClear(gameSetup->renderer);
-		/* render background */
-		SDL_RenderCopy(gameSetup->renderer, media->background, NULL, NULL);
-		/* render level */
-		level_draw(game->level, gameSetup->renderer, media);
-		/* draw remaining lifes */
-		for (int i = 0; i < game->player->lifes; i++)
-		{
-			SDL_Rect lifes;
-			lifes = game->ball->ballRect;
-			lifes.x = 20 + i * 20;
-			lifes.y = gameSetup->height - 30;
-			SDL_RenderCopy(gameSetup->renderer, game->ball->ball, NULL, &lifes);
-		}
-		/* render ball */
-		SDL_RenderCopy(gameSetup->renderer, game->ball->ball, NULL, &game->ball->ballRect);
-		/* render player */
-		SDL_RenderCopy(gameSetup->renderer, game->player->sprite, NULL, &game->player->playerRect);
-		/* render game over */
-		if (game->status == GAME_END)
-		{
-			SDL_Rect textRect;
-			SDL_QueryTexture(media->textGameOver, NULL, NULL, &textRect.w, &textRect.h);
-			textRect.x = (gameSetup->width - textRect.w) / 2;
-			textRect.y = 200;
-			SDL_RenderCopy(gameSetup->renderer, media->textGameOver, NULL, &textRect);
-		}
-		/* update screen */
-		SDL_RenderPresent(gameSetup->renderer);
+		game_draw();
 	}
 }
 
@@ -483,4 +454,39 @@ void game_event(void)
 			}
 		}
 	}
+}
+
+void game_draw(void)
+{
+	/* clear screen */
+	SDL_RenderClear(gameSetup->renderer);
+	/* render background */
+	SDL_RenderCopy(gameSetup->renderer, media->background, NULL, NULL);
+	/* render level */
+	level_draw(game->level, gameSetup->renderer, media);
+	/* draw remaining lifes */
+	int i;
+	SDL_Rect lifes;
+	lifes = game->ball->ballRect;
+	for (i = 0; i < game->player->lifes; i++)
+	{
+		lifes.x = 20 + i * 20;
+		lifes.y = gameSetup->height - 30;
+		SDL_RenderCopy(gameSetup->renderer, game->ball->ball, NULL, &lifes);
+	}
+	/* render ball */
+	SDL_RenderCopy(gameSetup->renderer, game->ball->ball, NULL, &game->ball->ballRect);
+	/* render player */
+	SDL_RenderCopy(gameSetup->renderer, game->player->sprite, NULL, &game->player->playerRect);
+	/* render game over */
+	if (game->status == GAME_END)
+	{
+		SDL_Rect textRect;
+		SDL_QueryTexture(media->textGameOver, NULL, NULL, &textRect.w, &textRect.h);
+		textRect.x = (gameSetup->width - textRect.w) / 2;
+		textRect.y = (gameSetup->height - textRect.h) / 2;
+		SDL_RenderCopy(gameSetup->renderer, media->textGameOver, NULL, &textRect);
+	}
+	/* update screen */
+	SDL_RenderPresent(gameSetup->renderer);
 }

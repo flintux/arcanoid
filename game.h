@@ -101,5 +101,10 @@ checks events from user interface
 */
 void game_event(void);
 
+/*
+draws game elements into window
+*/
+void game_draw(void);
+
 #endif
 
