@@ -190,11 +190,12 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 	/* check if all lines are filled */
 	for (line; line < LEVEL_LINE_MAX; line++)
 	{
-		for (row = 0; row < LEVEL_ROW_MAX; row++)
+		for (row; row < LEVEL_ROW_MAX; row++)
 		{
 			kind = BRICK_NONE;
 			level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
 		}
+		row = 0;
 	}
 	level->rows = LEVEL_ROW_MAX;
 	level->lines = LEVEL_LINE_MAX;
