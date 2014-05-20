@@ -4,20 +4,17 @@
 /*                                                                    */
 /**********************************************************************/
 
-
 #include "game.h"
 
 GameSDLSetup *gameSetup = NULL;
-
 GameMedia *media = NULL;
-
 Game *game = NULL;
-
 Level* levelCurrent = NULL;
 
 GameSDLSetup* game_setup_create(void)
 {
 	GameSDLSetup *gameSetup = NULL;
+
 	gameSetup = malloc(sizeof *gameSetup);
 	if (gameSetup == NULL)
 	{
@@ -28,11 +25,8 @@ GameSDLSetup* game_setup_create(void)
 	gameSetup->renderer = NULL;
 	gameSetup->height = SCREEN_HEIGHT;
 	gameSetup->width = SCREEN_WIDTH;
-
 	return gameSetup;
 }
-
-
 
 void game_setup_destroy(GameSDLSetup* gameSetup)
 {
@@ -46,7 +40,6 @@ void game_setup_destroy(GameSDLSetup* gameSetup)
 		gameSetup = NULL;
 	}
 }
-
 
 Game* game_create(GameSDLSetup *gameSetup)
 {
@@ -62,13 +55,10 @@ Game* game_create(GameSDLSetup *gameSetup)
 	}
 	game->gameSetup = gameSetup;
 	game->status = GAME_START;
-
 	game->player = player_create(media);
 	player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
-
 	game->ball = ball_create(media);
 	ball_position(game->ball, gameSetup->width / 2 - game->ball->ballRect.w / 2, player_top(game->player) - game->ball->ballRect.h);
-
 	return game;
 }
 
@@ -83,7 +73,6 @@ void game_destroy(Game *game)
 		free(game);
 		game = NULL;
 	}
-
 }
 
 int game_init(void)
@@ -94,7 +83,6 @@ int game_init(void)
 		printf("erreur creating game setup\n");
 		return 0;
 	}
-
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0)
 	{
 		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
@@ -107,7 +95,6 @@ int game_init(void)
 		{
 			printf("Warning: Linear texture filtering not enabled!");
 		}
-
 		/* create window */
 		gameSetup->window = SDL_CreateWindow("Arcanoid style game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, gameSetup->width, gameSetup->height, SDL_WINDOW_SHOWN);
 		if (gameSetup->window == NULL)
@@ -128,7 +115,6 @@ int game_init(void)
 			{
 				/* init the renderer color for clearing screen */
 				SDL_SetRenderDrawColor(gameSetup->renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);
-
 				/* init image loadig with PNG */
 				int imgFlags = (IMG_INIT_PNG | IMG_INIT_JPG);
 				if (!(IMG_Init(imgFlags) & imgFlags))
@@ -155,8 +141,6 @@ int game_init(void)
 	return 1;
 }
 
-
-
 /*
 cleans up all memory used (textures, music...)
 closes all inited SDL functions
@@ -164,27 +148,21 @@ closes all inited SDL functions
 void game_close(void)
 {
 	level_destroy(levelCurrent);
-
 	game_destroy(game);
-
 	media_close(media);
-
 	game_setup_destroy(gameSetup);
-
-	//Quit SDL subsystems
+	/* quit SDL subsystems */
 	TTF_Quit();
 	Mix_Quit();
 	IMG_Quit();
 	SDL_Quit();
 }
 
-
 /*
 Loads all media (pictures, fonts and music need by the game)
 */
 int game_media_load(void)
 {
-
 	media = media_load(gameSetup->renderer);
 	if (media == NULL)
 	{
@@ -225,8 +203,6 @@ int game_media_load(void)
 	}
 	return 1;
 }
-
-
 
 void ball_update(Ball *ball)
 {
@@ -330,7 +306,6 @@ void game_reset(void)
 {
 	game_destroy(game);
 	game = game_create(gameSetup);
-
 	level_destroy(levelCurrent);
 	levelCurrent = level_load_file("levels/level.txt", gameSetup->renderer, media);
 	if (!levelCurrent)
@@ -339,11 +314,9 @@ void game_reset(void)
 	}
 }
 
-
 void game_loop(void)
 {
 	game_reset();
-
 	while (game->status != GAME_EXIT)
 	{
 		while (SDL_PollEvent(&gameSetup->event) != 0)
@@ -456,16 +429,12 @@ void game_loop(void)
 			ball_update(game->ball);
 			player_move(game->player, game->ball, 1, gameSetup->width);
 		}
-
 		/* clear screen */
 		SDL_RenderClear(gameSetup->renderer);
-
 		/* render background */
 		SDL_RenderCopy(gameSetup->renderer, media->background, NULL, NULL);
-
 		/* render level */
 		level_draw(levelCurrent, gameSetup->renderer, media);
-
 		/* draw remaining lifes */
 		for (int i = 0; i < game->player->lifes; i++)
 		{
@@ -475,13 +444,10 @@ void game_loop(void)
 			lifes.y = gameSetup->height - 30;
 			SDL_RenderCopy(gameSetup->renderer, game->ball->ball, NULL, &lifes);
 		}
-
 		/* render ball */
 		SDL_RenderCopy(gameSetup->renderer, game->ball->ball, NULL, &game->ball->ballRect);
-
 		/* render player */
 		SDL_RenderCopy(gameSetup->renderer, game->player->sprite, NULL, &game->player->playerRect);
-
 		/* render game over */
 		if (game->status == GAME_END)
 		{
@@ -491,16 +457,15 @@ void game_loop(void)
 			textRect.y = 200;
 			SDL_RenderCopy(gameSetup->renderer, media->textGameOver, NULL, &textRect);
 		}
-
 		/* update screen */
 		SDL_RenderPresent(gameSetup->renderer);
 	}
 }
 
-
 void game_pause(Game *game)
 {
 	static GameStatus previousGameStatus = GAME_START;
+
 	if (game->status != GAME_PAUSE)
 	{
 		previousGameStatus = game->status;

@@ -23,7 +23,6 @@ typedef struct GameMedia{
 	TTF_Font *font;
 }GameMedia;
 
-
 /*
 loads an image to a texture
 */
@@ -43,7 +42,6 @@ GameMedia* media_load(SDL_Renderer *gameRenderer);
 destroys all media loaded my media_load
 */
 void media_close(GameMedia *media);
-
 
 #endif
 

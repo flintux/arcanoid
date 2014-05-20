@@ -11,14 +11,12 @@
 #define LEVEL_LINE_MAX 24
 #define LEVEL_SPEED_FACTOR 1
 
-
 typedef struct Level{
 	int number;
 	float speedFactor;
 	Brick *wall[LEVEL_LINE_MAX][LEVEL_ROW_MAX];
 	int rows;
 	int lines;
-
 } Level;
 
 /*

@@ -1,9 +1,9 @@
 #include "brick.h"
 
-
 Brick* brick_create(BrickKind kind, int xPosition, int yPosition, GameMedia *media)
 {
 	Brick *brick = NULL;
+
 	brick = malloc(sizeof *brick);
 	if (brick == NULL)
 	{
@@ -107,7 +107,6 @@ void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media)
 		/* do nothing :-)*/
 		break;
 	}
-
 }
 
 void brick_collided(Brick *brick)

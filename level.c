@@ -1,14 +1,11 @@
 #include "level.h"
 
-
-
-
 Level* level_create_random(int number, int lines, int rows, GameMedia* media)
 {
-	//srand(time(NULL));
-	srand(SDL_GetTicks());
 	BrickKind kind;
 	Level *level = NULL;
+
+	srand(SDL_GetTicks());
 	level = malloc(sizeof *level);
 	if (level == NULL)
 	{
@@ -22,7 +19,6 @@ Level* level_create_random(int number, int lines, int rows, GameMedia* media)
 	level->lines = lines;
 	level->rows = rows;
 	level->speedFactor = 1;
-
 	for (line = 0; line < lines; line++)
 	{
 		for (row = 0; row < rows; row++)
@@ -51,7 +47,6 @@ Level* level_create_random(int number, int lines, int rows, GameMedia* media)
 	return level;
 }
 
-
 void level_destroy(Level *level)
 {
 	int line;
@@ -71,7 +66,6 @@ void level_destroy(Level *level)
 			}
 		}
 	}
-
 	free(level);
 	level = NULL;
 }
@@ -82,6 +76,7 @@ void level_draw(Level *level, SDL_Renderer *renderer, GameMedia* media)
 {
 	int line;
 	int row;
+
 	for (line = 0; line < level->lines; line++)
 	{
 		for (row = 0; row < level->rows; row++)
@@ -100,7 +95,6 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 	int line = 0;
 	int row = 0;
 	BrickKind kind = BRICK_NONE;
-
 	int readChar;
 
 	file = fopen(path, "r");
@@ -109,7 +103,6 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		printf("error loading file: %s\n", path);
 		return level;
 	}
-
 	level = malloc(sizeof *level);
 	if (!level)
 	{
@@ -118,10 +111,8 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		file = NULL;
 		return level;
 	}
-
 	level->number = 0;
 	level->speedFactor = LEVEL_SPEED_FACTOR;
-
 	while ((readChar = getc(file)) != EOF)
 	{
 		switch (readChar)
@@ -196,7 +187,6 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 			break;
 		}
 	}
-
 	/* check if all lines are filled */
 	for (line; line < LEVEL_LINE_MAX; line++)
 	{
@@ -208,8 +198,6 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 	}
 	level->rows = LEVEL_ROW_MAX;
 	level->lines = LEVEL_LINE_MAX;
-
 	fclose(file);
-
 	return level;
 }

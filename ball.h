@@ -10,16 +10,11 @@
 #include "player.h"
 #include "brick.h"
 
-
 #define BALL_SIZE 15
 #define BALL_UPDATE_SPEED 1
 #define BALL_DEFAULT_SPEED -0.4f
 
-
-
-
 typedef struct Brick Brick;
-
 typedef struct Player Player;
 
 typedef struct Ball
@@ -35,7 +30,6 @@ typedef struct Ball
 	int updateSpeed;
 } Ball;
 
-
 /*
 possible ball collisions
 it is based on the ball itself, so that TOP means
@@ -49,7 +43,6 @@ typedef enum BallCollisionSide
 	COLLISION_SIDE_LEFT,
 	COLLISION_SIDE_RIGHT
 } BallCollisionSide;
-
 
 /*
 creates a ball with default values
@@ -92,18 +85,15 @@ returns side of ball that touched the wall
 */
 BallCollisionSide ball_check_wall_collision(Ball *ball, int borderRight, int borderBottom);
 
-
 /*
 checks if ball touched player and changes ball speed accordingly.
 */
 void ball_check_player_collision(Ball *ball, Player *player);
 
-
 /*
 checks if ball touched brick and changes ball speed accordingly.
 */
 BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick);
-
 
 /*
 places ball at given position (top left corner of ball)

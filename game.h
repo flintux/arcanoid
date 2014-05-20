@@ -12,12 +12,9 @@
 #include "brick.h"
 #include "level.h"
 
-
-
 /* window dimensions */
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
-
 
 typedef enum GameStatus{
 	GAME_START,
@@ -27,7 +24,6 @@ typedef enum GameStatus{
 	GAME_EXIT
 }GameStatus;
 
-
 typedef struct GameSDLSetup{
 	SDL_Window *window;
 	SDL_Renderer *renderer;
@@ -35,7 +31,6 @@ typedef struct GameSDLSetup{
 	int width;
 	int height;
 }GameSDLSetup;
-
 
 typedef struct Game{
 	GameSDLSetup *gameSetup;
@@ -49,7 +44,6 @@ typedef struct Game{
 creates a GameSDLSetup
 */
 GameSDLSetup* game_setup_create(void);
-
 
 /*
 destroys a GameSDLSetup
@@ -65,7 +59,6 @@ Game* game_create(GameSDLSetup *gameSetup);
 destroys a game
 */
 void game_destroy(Game *game);
-
 
 /*
 inits game environement
@@ -102,7 +95,6 @@ void game_reset(void);
 pauses game
 */
 void game_pause(Game *game);
-
 
 #endif
 

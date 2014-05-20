@@ -1,18 +1,15 @@
 #include "player.h"
 
-
-
-
 Player* player_create(GameMedia *media)
 {
 	Player *player = NULL;
+
 	player = malloc(sizeof *player);
 	if (player == NULL)
 	{
 		printf("error allocating memory for player\n");
 		return player;
 	}
-
 	player->sprite = media->player;
 	player->playerRect.x = 0;
 	player->playerRect.y = 0;
@@ -22,11 +19,8 @@ Player* player_create(GameMedia *media)
 	player->keyTimer = SDL_GetTicks();
 	player->direction = DIRECTION_NONE;
 	player->lifes = PLAYER_DEFAULT_LIFES;
-
 	return player;
 }
-
-
 
 void player_destroy(Player *player)
 {

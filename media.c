@@ -1,6 +1,5 @@
 #include "media.h"
 
-
 SDL_Texture* media_load_image(SDL_Renderer *gameRenderer, char *path)
 {
 	SDL_Texture *newTexture = NULL;
@@ -19,11 +18,8 @@ SDL_Texture* media_load_image(SDL_Renderer *gameRenderer, char *path)
 		}
 		SDL_FreeSurface(loadedSurface);
 	}
-
 	return newTexture;
 }
-
-
 
 SDL_Texture* media_load_text(SDL_Renderer *gameRenderer, TTF_Font *gameFont, char *text)
 {
@@ -45,18 +41,14 @@ SDL_Texture* media_load_text(SDL_Renderer *gameRenderer, TTF_Font *gameFont, cha
 		}
 	}
 	SDL_FreeSurface(temporarySurface);
-
 	return texture;
 }
-
-
-
 
 GameMedia* media_load(SDL_Renderer *gameRenderer)
 {
 	GameMedia *media = NULL;
-	media = malloc(sizeof *media);
 
+	media = malloc(sizeof *media);
 	if (media == NULL)
 	{
 		printf("error allocating memory for media\n");
@@ -129,8 +121,6 @@ GameMedia* media_load(SDL_Renderer *gameRenderer)
 	return media;
 }
 
-
-
 void media_close(GameMedia *media)
 {
 	SDL_DestroyTexture(media->background);
@@ -155,13 +145,10 @@ void media_close(GameMedia *media)
 	media->brickSuperman = NULL;
 	SDL_DestroyTexture(media->textGameOver);
 	media->textGameOver = NULL;
-	
 	Mix_FreeMusic(media->music);
 	media->music = NULL;
-
 	TTF_CloseFont(media->font);
 	media->font = NULL;
-
 	free(media);
 	media = NULL;
 }

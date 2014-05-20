@@ -20,11 +20,8 @@ Ball* ball_create(GameMedia *media)
 	ball->actualSpeed = BALL_DEFAULT_SPEED;
 	ball->timer = SDL_GetTicks();
 	ball->updateSpeed = BALL_UPDATE_SPEED;
-
 	return ball;
-
 }
-
 
 void ball_destroy(Ball *ball)
 {
@@ -66,10 +63,7 @@ void ball_move(Ball *ball)
 BallCollisionSide ball_check_wall_collision(Ball *ball, int borderRight, int borderBottom)
 {
 	BallCollisionSide collision = COLLISION_SIDE_NONE;
-	/*int window_h;
-	int window_w;
-	SDL_GetWindowSize(window, &window_w, &window_h);
-	printf("window size is %d x %d", window_w, window_h);*/
+
 	if (ball_left(ball) <= 0)
 	{
 		if (ball->ballSpeedX < 0)
@@ -88,7 +82,7 @@ BallCollisionSide ball_check_wall_collision(Ball *ball, int borderRight, int bor
 			puts("collision with right");
 		}
 	}
-	else if (ball_top(ball) <= 0) // top border
+	else if (ball_top(ball) <= 0)
 	{
 		if (ball->ballSpeedY < 0)
 		{
@@ -102,13 +96,11 @@ BallCollisionSide ball_check_wall_collision(Ball *ball, int borderRight, int bor
 		collision = COLLISION_SIDE_BOTTOM;
 		puts("collision with bottom");
 	}
-
 	return collision;
 }
 
 void ball_check_player_collision(Ball *ball, Player *player)
 {
-
 	if (ball_bottom(ball) >= player_top(player) &&
 		ball_bottom(ball) < player_top(player) + 10 &&
 		ball_right(ball) >= player_left(player) &&
@@ -116,16 +108,12 @@ void ball_check_player_collision(Ball *ball, Player *player)
 	{
 		if (ball->ballSpeedY > 0) /* only if ball is going down */
 		{
-
 			float xball;
 			float xplayer;
 			float shift;
-			
 			xball = (float)ball_left(ball) + (ball->ballRect.w / 2);
 			xplayer = (float)player_left(player) + (player->playerRect.w / 2);
-
 			shift = xball - xplayer;
-
 			ball->ballSpeedX = -(float)(shift / (player->playerRect.w / 2 + ball->ballRect.w / 2))*1.2f*ball->actualSpeed;
 			if (ball->ballSpeedX > 0)
 			{
@@ -149,9 +137,6 @@ BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick)
 	{
 		return collision;
 	}
-
-	/*we only check the point that could it according to speed*/
-
 	if (ball->ballSpeedX > 0)	/*moving right to left*/
 	{
 		if (ball_right(ball) == brick_left(brick) + 1) /*we just entered the brick*/
@@ -178,7 +163,6 @@ BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick)
 			}
 		}
 	}
-
 	if (ball->ballSpeedY > 0)	/*moving top to bottom*/
 	{
 		if (ball_bottom(ball) == brick_top(brick) + 1) /*we just entered the brick*/
@@ -205,7 +189,6 @@ BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick)
 			}
 		}
 	}
-
 	return collision;
 }
 

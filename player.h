@@ -14,16 +14,13 @@
 #define PLAYER_DEFAULT_LIFES 3
 #define PLAYER_DEFAULT_SPEED 2
 
-
 typedef struct Ball Ball;
-
 
 typedef enum PlayerDirection{
 	DIRECTION_NONE,
 	DIRECTION_RIGHT,
 	DIRECTION_LEFT
 }PlayerDirection;
-
 
 typedef struct Player
 {
@@ -35,12 +32,10 @@ typedef struct Player
 	int lifes;
 } Player;
 
-
 /*
 creates a player
 */
 Player* player_create(GameMedia *media);
-
 
 /*
 destroys a player

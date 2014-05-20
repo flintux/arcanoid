@@ -7,7 +7,6 @@
 #define BRICK_HEIGHT 25
 #define BRICK_WIDTH 50
 
-
 typedef enum BrickKind{
 	BRICK_NONE,
 	BRICK_NORMAL,
@@ -16,13 +15,11 @@ typedef enum BrickKind{
 	BRICK_SUPERMAN
 }BrickKind;
 
-
 typedef struct Brick{
 	BrickKind kind;
 	int live;
 	SDL_Rect rect;
 }Brick;
-
 
 /*
 creates a brick of special kind at given position
@@ -63,6 +60,5 @@ void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media);
 updates the brick after a collision
 */
 void brick_collided(Brick *brick);
-
 
 #endif
