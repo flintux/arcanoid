@@ -248,7 +248,7 @@ void ball_update(Ball *ball)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(game->level->wall[line][row]);
+						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 						break;
@@ -261,7 +261,7 @@ void ball_update(Ball *ball)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(game->level->wall[line][row]);
+						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -280,7 +280,7 @@ void ball_update(Ball *ball)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(game->level->wall[line][row]);
+						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -292,7 +292,7 @@ void ball_update(Ball *ball)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(game->level->wall[line][row]);
+						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -309,12 +309,6 @@ void game_reset(void)
 {
 	game_destroy(game);
 	game = game_create(gameSetup);
-	level_destroy(game->level);
-	game->level = level_load_file("levels/level.txt", gameSetup->renderer, media);
-	if (!game->level)
-	{
-		game->level = level_create_random(1, 24, 20, media);
-	}
 }
 
 void game_loop(void)
@@ -335,7 +329,16 @@ void game_loop(void)
 			ball_update(game->ball);
 			player_move(game->player, game->ball, 1, gameSetup->width);
 		}
+		if (game->level->destroyableBricks == 0)
+		{
+			game->status = GAME_FINISHED;
+		}
 		game_draw();
+		if (game->status == GAME_FINISHED)
+		{
+			SDL_Delay(3000);
+			game_reset();
+		}
 	}
 }
 
@@ -480,6 +483,14 @@ void game_draw(void)
 	SDL_RenderCopy(gameSetup->renderer, game->player->sprite, NULL, &game->player->playerRect);
 	/* render game over */
 	if (game->status == GAME_END)
+	{
+		SDL_Rect textRect;
+		SDL_QueryTexture(media->textGameOver, NULL, NULL, &textRect.w, &textRect.h);
+		textRect.x = (gameSetup->width - textRect.w) / 2;
+		textRect.y = (gameSetup->height - textRect.h) / 2;
+		SDL_RenderCopy(gameSetup->renderer, media->textGameOver, NULL, &textRect);
+	}
+	if (game->status == GAME_FINISHED)
 	{
 		SDL_Rect textRect;
 		SDL_QueryTexture(media->textGameOver, NULL, NULL, &textRect.w, &textRect.h);

@@ -59,6 +59,6 @@ void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media);
 /*
 updates the brick after a collision
 */
-void brick_collided(Brick *brick);
+int brick_collided(Brick *brick);
 
 #endif

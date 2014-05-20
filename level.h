@@ -17,6 +17,7 @@ typedef struct Level{
 	Brick *wall[LEVEL_LINE_MAX][LEVEL_ROW_MAX];
 	int rows;
 	int lines;
+	int destroyableBricks;
 } Level;
 
 /*
@@ -38,6 +39,11 @@ void level_draw(Level *level, SDL_Renderer * renderer, GameMedia* media);
 load a level from a file
 */
 Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media);
+
+/*
+counts destroyable bricks in level
+*/
+int level_count_bricks(Level *level);
 
 #endif
 

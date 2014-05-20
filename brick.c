@@ -109,7 +109,7 @@ void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media)
 	}
 }
 
-void brick_collided(Brick *brick)
+int brick_collided(Brick *brick)
 {
 	switch (brick->kind)
 	{
@@ -120,6 +120,7 @@ void brick_collided(Brick *brick)
 		if (brick->live <= 0)
 		{
 			brick->kind = BRICK_NONE;
+			return 1;
 		}
 		break;
 	case BRICK_SUPERMAN:
@@ -128,5 +129,6 @@ void brick_collided(Brick *brick)
 		/* do nothing :-)*/
 		break;
 	}
+	return 0;
 }
 

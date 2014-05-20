@@ -44,6 +44,7 @@ Level* level_create_random(int number, int lines, int rows, GameMedia* media)
 			level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
 		}
 	}
+	level->destroyableBricks = level_count_bricks(level);
 	return level;
 }
 
@@ -199,6 +200,32 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 	}
 	level->rows = LEVEL_ROW_MAX;
 	level->lines = LEVEL_LINE_MAX;
+	level->destroyableBricks = level_count_bricks(level);
 	fclose(file);
 	return level;
+}
+
+int level_count_bricks(Level *level)
+{
+	int line;
+	int row;
+	int destroyableBricks = 0;
+	for (line = 0; line < level->lines; line++)
+	{
+		for (row = 0; row < level->rows; row++)
+		{
+			switch (level->wall[line][row]->kind)
+			{
+			case BRICK_NORMAL:
+			case BRICK_DUAL:
+			case BRICK_TRIPLE:
+				destroyableBricks++;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	printf("amount of bricks on level: %d\n", destroyableBricks);
+	return destroyableBricks;
 }
