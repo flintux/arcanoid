@@ -1,5 +1,5 @@
-#ifndef _INC_BALL
-#define _INC_BALL
+#ifndef __BALL_H__
+#define __BALL_H__
 
 #include <stdio.h>
 #include <SDL2/SDL.h>

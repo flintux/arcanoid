@@ -1,5 +1,5 @@
-#ifndef _INC_ARCANOID
-#define _INC_ARCANOID
+#ifndef __ARCANOID_H__
+#define __ARCANOID_H__
 
 #include "game.h"
 

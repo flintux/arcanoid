@@ -1,5 +1,5 @@
-#ifndef _INC_PLAYER
-#define _INC_PLAYER
+#ifndef __PLAYER_H__
+#define __PLAYER_H__
 
 #include <stdio.h>
 #include <SDL2/SDL.h>

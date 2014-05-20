@@ -1,5 +1,5 @@
-#ifndef _INC_LEVEL
-#define _INC_LEVEL
+#ifndef __LEVEL_H__
+#define __LEVEL_H__
 
 #include <stdlib.h>
 #include <time.h>

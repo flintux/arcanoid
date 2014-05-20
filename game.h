@@ -1,5 +1,5 @@
-#ifndef INC_GAME
-#define INC_GAME
+#ifndef __GAME_H__
+#define __GAME_H__
 
 #include <stdio.h>
 #include <SDL2/SDL.h>

@@ -1,5 +1,5 @@
-#ifndef _INC_MEDIA
-#define _INC_MEDIA
+#ifndef __MEDIA_H__
+#define __MEDIA_H__
 
 #include <stdio.h>
 #include <SDL2/SDL.h>

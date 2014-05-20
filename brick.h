@@ -1,5 +1,5 @@
-#ifndef _INC_BRICK
-#define _INC_BRICK
+#ifndef __BRICK_H__
+#define __BRICK_H__
 
 #include <SDL2/SDL.h>
 #include "media.h"
