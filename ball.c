@@ -114,7 +114,7 @@ void ball_check_player_collision(Ball *ball, Player *player)
 			xball = (float)ball_left(ball) + (ball->ballRect.w / 2);
 			xplayer = (float)player_left(player) + (player->playerRect.w / 2);
 			shift = xball - xplayer;
-			ball->ballSpeedX = -(float)(shift / (player->playerRect.w / 2 + ball->ballRect.w / 2))*1.2f*ball->actualSpeed;
+			ball->ballSpeedX = -(float)(shift / (player->playerRect.w / 2 + ball->ballRect.w / 2))*BALL_SPEED_X_FACTOR*ball->actualSpeed;
 			if (ball->ballSpeedX > 0)
 			{
 				ball->ballSpeedY = (float)(2.0 - ball->ballSpeedX) * ball->actualSpeed;

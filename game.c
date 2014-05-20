@@ -100,7 +100,7 @@ int game_init(void)
 			printf("Warning: Linear texture filtering not enabled!");
 		}
 		/* create window */
-		gameSetup->window = SDL_CreateWindow("Arcanoid style game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, gameSetup->width, gameSetup->height, SDL_WINDOW_SHOWN);
+		gameSetup->window = SDL_CreateWindow(GAME_TITLE, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, gameSetup->width, gameSetup->height, SDL_WINDOW_SHOWN);
 		if (gameSetup->window == NULL)
 		{
 			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());

@@ -15,6 +15,7 @@
 /* window dimensions */
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 768
+#define GAME_TITLE "arcanoid style game"
 
 typedef enum GameStatus{
 	GAME_START,

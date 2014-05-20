@@ -13,6 +13,7 @@
 #define BALL_SIZE 15
 #define BALL_UPDATE_SPEED 1
 #define BALL_DEFAULT_SPEED -0.4f
+#define BALL_SPEED_X_FACTOR 1.2f
 
 typedef struct Brick Brick;
 typedef struct Player Player;

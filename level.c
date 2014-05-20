@@ -18,7 +18,7 @@ Level* level_create_random(int number, int lines, int rows, GameMedia* media)
 	if (lines > LEVEL_LINE_MAX) lines = LEVEL_LINE_MAX;
 	level->lines = lines;
 	level->rows = rows;
-	level->speedFactor = 1;
+	level->speedFactor = LEVEL_SPEED_FACTOR;
 	for (line = 0; line < lines; line++)
 	{
 		for (row = 0; row < rows; row++)
