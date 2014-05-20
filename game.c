@@ -9,7 +9,6 @@
 GameSDLSetup *gameSetup = NULL;
 GameMedia *media = NULL;
 Game *game = NULL;
-Level* levelCurrent = NULL;
 
 GameSDLSetup* game_setup_create(void)
 {
@@ -44,8 +43,6 @@ void game_setup_destroy(GameSDLSetup* gameSetup)
 Game* game_create(GameSDLSetup *gameSetup)
 {
 	Game *game = NULL;
-	Ball *ball = NULL;
-	Player* player = NULL;
 
 	game = malloc(sizeof *game);
 	if (game == NULL)
@@ -55,6 +52,11 @@ Game* game_create(GameSDLSetup *gameSetup)
 	}
 	game->gameSetup = gameSetup;
 	game->status = GAME_START;
+	game->level = level_load_file("levels/level.txt",gameSetup->renderer, media);
+	if (game->level == NULL)
+	{
+		game->level = level_create_random(1, 16, 20, media);
+	}
 	game->player = player_create(media);
 	player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
 	game->ball = ball_create(media);
@@ -66,6 +68,8 @@ void game_destroy(Game *game)
 {
 	if (game != NULL)
 	{
+		level_destroy(game->level);
+		game->level = NULL;
 		ball_destroy(game->ball);
 		game->ball = NULL;
 		player_destroy(game->player);
@@ -147,7 +151,6 @@ closes all inited SDL functions
 */
 void game_close(void)
 {
-	level_destroy(levelCurrent);
 	game_destroy(game);
 	media_close(media);
 	game_setup_destroy(gameSetup);
@@ -237,15 +240,15 @@ void ball_update(Ball *ball)
 	ball_check_player_collision(ball, game->player);
 	if (ball->ballSpeedY > 0)
 	{
-		for (line = 0; line < levelCurrent->lines && !(collision); line++)
+		for (line = 0; line < game->level->lines && !(collision); line++)
 		{
 			if (ball->ballSpeedX > 0)
 			{
-				for (row = 0; row < levelCurrent->rows && !(collision); row++)
+				for (row = 0; row < game->level->rows && !(collision); row++)
 				{
-					if (ball_check_brick_collision(ball, levelCurrent->wall[line][row]) != COLLISION_SIDE_NONE)
+					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(levelCurrent->wall[line][row]);
+						brick_collided(game->level->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 						break;
@@ -254,11 +257,11 @@ void ball_update(Ball *ball)
 			}
 			else
 			{
-				for (row = levelCurrent->rows - 1; row >= 0 && !(collision); row--)
+				for (row = game->level->rows - 1; row >= 0 && !(collision); row--)
 				{
-					if (ball_check_brick_collision(ball, levelCurrent->wall[line][row]) != COLLISION_SIDE_NONE)
+					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(levelCurrent->wall[line][row]);
+						brick_collided(game->level->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -268,16 +271,16 @@ void ball_update(Ball *ball)
 	}
 	else
 	{
-		for (line = levelCurrent->lines - 1; line >= 0 && !(collision); line--)
+		for (line = game->level->lines - 1; line >= 0 && !(collision); line--)
 		{
 			if (ball->ballSpeedX > 0)
 			{
 
-				for (row = 0; row < levelCurrent->rows && !(collision); row++)
+				for (row = 0; row < game->level->rows && !(collision); row++)
 				{
-					if (ball_check_brick_collision(ball, levelCurrent->wall[line][row]) != COLLISION_SIDE_NONE)
+					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(levelCurrent->wall[line][row]);
+						brick_collided(game->level->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -285,11 +288,11 @@ void ball_update(Ball *ball)
 			}
 			else
 			{
-				for (row = levelCurrent->rows - 1; row >= 0 && !(collision); row--)
+				for (row = game->level->rows - 1; row >= 0 && !(collision); row--)
 				{
-					if (ball_check_brick_collision(ball, levelCurrent->wall[line][row]) != COLLISION_SIDE_NONE)
+					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						brick_collided(levelCurrent->wall[line][row]);
+						brick_collided(game->level->wall[line][row]);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -306,11 +309,11 @@ void game_reset(void)
 {
 	game_destroy(game);
 	game = game_create(gameSetup);
-	level_destroy(levelCurrent);
-	levelCurrent = level_load_file("levels/level.txt", gameSetup->renderer, media);
-	if (!levelCurrent)
+	level_destroy(game->level);
+	game->level = level_load_file("levels/level.txt", gameSetup->renderer, media);
+	if (!game->level)
 	{
-		levelCurrent = level_create_random(1, 24, 20, media);
+		game->level = level_create_random(1, 24, 20, media);
 	}
 }
 
@@ -395,8 +398,8 @@ void game_loop(void)
 					newLevel = level_load_file("levels/level.txt", gameSetup->renderer, media);
 					if (newLevel != NULL)
 					{
-						level_destroy(levelCurrent);
-						levelCurrent = newLevel;
+						level_destroy(game->level);
+						game->level = newLevel;
 					}
 				}
 			}
@@ -434,7 +437,7 @@ void game_loop(void)
 		/* render background */
 		SDL_RenderCopy(gameSetup->renderer, media->background, NULL, NULL);
 		/* render level */
-		level_draw(levelCurrent, gameSetup->renderer, media);
+		level_draw(game->level, gameSetup->renderer, media);
 		/* draw remaining lifes */
 		for (int i = 0; i < game->player->lifes; i++)
 		{
