@@ -128,6 +128,11 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		{
 		case '\n':
 			/* check if all rows are filled */
+			if (line >= LEVEL_LINE_MAX)
+			{
+				printf("too many lines in file, skipping\n");
+				break;
+			}
 			for (row; row < LEVEL_ROW_MAX;row++)
 			{
 				kind = BRICK_NONE;
@@ -137,7 +142,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 			row = 0;
 			break;
 		case '0':
-			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			if (row >= LEVEL_ROW_MAX || line >= LEVEL_LINE_MAX)
 			{
 				printf("too many lines or rows in file, skipping\n");
 				break;
@@ -147,7 +152,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 			row++;
 			break;
 		case '1':
-			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			if (row >= LEVEL_ROW_MAX || line >= LEVEL_LINE_MAX)
 			{
 				printf("too many lines or rows in file, skipping\n");
 				break;
@@ -157,7 +162,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 			row++;
 			break;
 		case '2':
-			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			if (row >= LEVEL_ROW_MAX || line >= LEVEL_LINE_MAX)
 			{
 				printf("too many lines or rows in file, skipping\n");
 				break;
@@ -167,7 +172,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 			row++;
 			break;
 		case '3':
-			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			if (row >= LEVEL_ROW_MAX || line >= LEVEL_LINE_MAX)
 			{
 				printf("too many lines or rows in file, skipping\n");
 				break;
@@ -177,7 +182,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 			row++;
 			break;
 		case '9':
-			if ((row > LEVEL_ROW_MAX) || line > LEVEL_LINE_MAX)
+			if (row >= LEVEL_ROW_MAX || line >= LEVEL_LINE_MAX)
 			{
 				printf("too many lines or rows in file, skipping\n");
 				break;
