@@ -9,7 +9,7 @@ Level* level_create_random(int number, int lines, int rows, GameMedia* media)
 	srand(SDL_GetTicks());
 	BrickKind kind;
 	Level *level = NULL;
-	level = (Level *)malloc(sizeof(Level));
+	level = malloc(sizeof *level);
 	if (level == NULL)
 	{
 		return level;
@@ -110,7 +110,7 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 		return level;
 	}
 
-	level = (Level *)malloc(sizeof(Level));
+	level = malloc(sizeof *level);
 	if (!level)
 	{
 		printf("error allocating memory for level for %s", path);
@@ -200,7 +200,6 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media)
 			kind = BRICK_NONE;
 			level->wall[line][row] = brick_create(kind, 12 + row * BRICK_WIDTH, line * BRICK_HEIGHT, media);
 		}
-
 	}
 	level->rows = LEVEL_ROW_MAX;
 	level->lines = LEVEL_LINE_MAX;

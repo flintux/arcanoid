@@ -6,7 +6,7 @@
 Player* player_create(GameMedia *media)
 {
 	Player *player = NULL;
-	player = (Player *) malloc(sizeof(Player));
+	player = malloc(sizeof *player);
 	if (player == NULL)
 	{
 		printf("error allocating memory for player\n");

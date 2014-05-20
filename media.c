@@ -55,7 +55,7 @@ SDL_Texture* media_load_text(SDL_Renderer *gameRenderer, TTF_Font *gameFont, cha
 GameMedia* media_load(SDL_Renderer *gameRenderer)
 {
 	GameMedia *media = NULL;
-	media = (GameMedia *) malloc(sizeof(GameMedia));
+	media = malloc(sizeof *media);
 
 	if (media == NULL)
 	{

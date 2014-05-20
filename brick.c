@@ -4,7 +4,7 @@
 Brick* brick_create(BrickKind kind, int xPosition, int yPosition, GameMedia *media)
 {
 	Brick *brick = NULL;
-	brick = (Brick *) malloc(sizeof(Brick));
+	brick = malloc(sizeof *brick);
 	if (brick == NULL)
 	{
 		printf("error allocating memory for brick\n");

@@ -18,7 +18,7 @@ Level* levelCurrent = NULL;
 GameSDLSetup* game_setup_create(void)
 {
 	GameSDLSetup *gameSetup = NULL;
-	gameSetup = (GameSDLSetup *) malloc(sizeof(GameSDLSetup));
+	gameSetup = malloc(sizeof *gameSetup);
 	if (gameSetup == NULL)
 	{
 		printf("error creating game SDL setup!\n");
@@ -54,7 +54,7 @@ Game* game_create(GameSDLSetup *gameSetup)
 	Ball *ball = NULL;
 	Player* player = NULL;
 
-	game = (Game *)malloc(sizeof(Game));
+	game = malloc(sizeof *game);
 	if (game == NULL)
 	{
 		printf("error cannot allocate game memory\n");

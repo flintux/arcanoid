@@ -8,7 +8,7 @@
 
 Ball* ball_create(GameMedia *media)
 {
-	Ball *ball = (Ball *) malloc(sizeof(Ball));
+	Ball *ball = malloc(sizeof *ball);
 
 	ball->ball = media->ball;
 	ball->ballRect.h = BALL_SIZE;
