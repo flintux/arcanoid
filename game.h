@@ -96,5 +96,10 @@ pauses game
 */
 void game_pause(Game *game);
 
+/*
+checks events from user interface
+*/
+void game_event(void);
+
 #endif
 

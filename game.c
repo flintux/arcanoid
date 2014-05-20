@@ -324,104 +324,7 @@ void game_loop(void)
 	{
 		while (SDL_PollEvent(&gameSetup->event) != 0)
 		{
-			const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
-			if (gameSetup->event.type == SDL_QUIT)
-			{
-				game->status = GAME_EXIT;
-			}
-			else if (gameSetup->event.type == SDL_KEYDOWN)
-			{
-
-				if (currentKeyStates[SDL_SCANCODE_RIGHT] && currentKeyStates[SDL_SCANCODE_LEFT])
-				{
-					game->player->direction = DIRECTION_NONE; // if also RIGHT key is pressed don't move
-				}
-				else
-				{
-					if (currentKeyStates[SDL_SCANCODE_LEFT])
-					{
-						game->player->direction = DIRECTION_LEFT;
-					}
-					else if (currentKeyStates[SDL_SCANCODE_RIGHT])
-					{
-						game->player->direction = DIRECTION_RIGHT;
-					}
-				}
-				if (currentKeyStates[SDL_SCANCODE_SPACE])
-				{
-					if (game->status == GAME_START)
-					{
-						game->status = GAME_RUNNING;
-					}
-					else if (game->status == GAME_PAUSE)
-					{
-						game_pause(game);
-					}
-				}
-				if (currentKeyStates[SDL_SCANCODE_P])
-				{
-					game_pause(game);
-				}
-				if (currentKeyStates[SDL_SCANCODE_Q] | currentKeyStates[SDL_SCANCODE_ESCAPE])
-				{
-					game->status = GAME_EXIT;
-				}
-				if (currentKeyStates[SDL_SCANCODE_R])
-				{
-					/*for (int test = 0; test < 100; test++)  used for testing memory leak*/
-					if (game->status == GAME_END)
-					{
-						game_reset();
-					}
-				}
-				if (currentKeyStates[SDL_SCANCODE_S] && gameSetup->event.key.repeat == 0)
-				{
-					if (Mix_PlayingMusic() == 0)
-					{
-						Mix_PlayMusic(media->music, -1);
-					}
-					else
-					{
-						if (Mix_PausedMusic() == 1)
-						{
-							Mix_ResumeMusic();
-						}
-						else
-						{
-							Mix_PauseMusic();
-						}
-					}
-				}
-				if (currentKeyStates[SDL_SCANCODE_L] && gameSetup->event.key.repeat == 0)
-				{
-					Level *newLevel = NULL;
-					newLevel = level_load_file("levels/level.txt", gameSetup->renderer, media);
-					if (newLevel != NULL)
-					{
-						level_destroy(game->level);
-						game->level = newLevel;
-					}
-				}
-			}
-			else if (gameSetup->event.type == SDL_KEYUP)
-			{
-				game->player->direction = DIRECTION_NONE;
-				if (currentKeyStates[SDL_SCANCODE_RIGHT] && currentKeyStates[SDL_SCANCODE_LEFT])
-				{
-					game->player->direction = DIRECTION_NONE;
-				}
-				else
-				{
-					if (currentKeyStates[SDL_SCANCODE_LEFT])
-					{
-						game->player->direction = DIRECTION_LEFT;
-					}
-					else if (currentKeyStates[SDL_SCANCODE_RIGHT])
-					{
-						game->player->direction = DIRECTION_RIGHT;
-					}
-				}
-			}
+			game_event();
 		}
 		if (game->status == GAME_START)
 		{
@@ -477,5 +380,107 @@ void game_pause(Game *game)
 	else
 	{
 		game->status = previousGameStatus;
+	}
+}
+
+void game_event(void)
+{
+	const Uint8* currentKeyStates = SDL_GetKeyboardState(NULL);
+	if (gameSetup->event.type == SDL_QUIT)
+	{
+		game->status = GAME_EXIT;
+	}
+	else if (gameSetup->event.type == SDL_KEYDOWN)
+	{
+
+		if (currentKeyStates[SDL_SCANCODE_RIGHT] && currentKeyStates[SDL_SCANCODE_LEFT])
+		{
+			game->player->direction = DIRECTION_NONE;
+		}
+		else
+		{
+			if (currentKeyStates[SDL_SCANCODE_LEFT])
+			{
+				game->player->direction = DIRECTION_LEFT;
+			}
+			else if (currentKeyStates[SDL_SCANCODE_RIGHT])
+			{
+				game->player->direction = DIRECTION_RIGHT;
+			}
+		}
+		if (currentKeyStates[SDL_SCANCODE_SPACE] && gameSetup->event.key.repeat == 0)
+		{
+			if (game->status == GAME_START)
+			{
+				game->status = GAME_RUNNING;
+			}
+			else if (game->status == GAME_PAUSE)
+			{
+				game_pause(game);
+			}
+		}
+		if (currentKeyStates[SDL_SCANCODE_P] && gameSetup->event.key.repeat == 0)
+		{
+			game_pause(game);
+		}
+		if (currentKeyStates[SDL_SCANCODE_Q] | currentKeyStates[SDL_SCANCODE_ESCAPE])
+		{
+			game->status = GAME_EXIT;
+		}
+		if (currentKeyStates[SDL_SCANCODE_R] && gameSetup->event.key.repeat == 0)
+		{
+			/*for (int test = 0; test < 100; test++)  used for testing memory leak*/
+			if (game->status == GAME_END)
+			{
+				game_reset();
+			}
+		}
+		if (currentKeyStates[SDL_SCANCODE_S] && gameSetup->event.key.repeat == 0)
+		{
+			if (Mix_PlayingMusic() == 0)
+			{
+				Mix_PlayMusic(media->music, -1);
+			}
+			else
+			{
+				if (Mix_PausedMusic() == 1)
+				{
+					Mix_ResumeMusic();
+				}
+				else
+				{
+					Mix_PauseMusic();
+				}
+			}
+		}
+		if (currentKeyStates[SDL_SCANCODE_L] && gameSetup->event.key.repeat == 0)
+		{
+			Level *newLevel = NULL;
+			newLevel = level_load_file("levels/level.txt", gameSetup->renderer, media);
+			if (newLevel != NULL)
+			{
+				level_destroy(game->level);
+				game->level = newLevel;
+			}
+		}
+	}
+	else if (gameSetup->event.type == SDL_KEYUP)
+	{
+		game->player->direction = DIRECTION_NONE;
+		if (currentKeyStates[SDL_SCANCODE_RIGHT] && currentKeyStates[SDL_SCANCODE_LEFT])
+		{
+			game->player->direction = DIRECTION_NONE;
+		}
+		else
+		{
+			if (currentKeyStates[SDL_SCANCODE_LEFT])
+			{
+				game->player->direction = DIRECTION_LEFT;
+			}
+			else if (currentKeyStates[SDL_SCANCODE_RIGHT])
+			{
+				game->player->direction = DIRECTION_RIGHT;
+			}
+		}
 	}
 }
