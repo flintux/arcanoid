@@ -52,11 +52,7 @@ Game* game_create(GameSDLSetup *gameSetup)
 	}
 	game->gameSetup = gameSetup;
 	game->status = GAME_START;
-	game->level = level_load_file("levels/level.txt",gameSetup->renderer, media);
-	if (game->level == NULL)
-	{
-		game->level = level_create_random(1, 16, 20, media);
-	}
+	game->level = level_first(gameSetup->renderer, media);
 	game->player = player_create(media);
 	player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
 	game->ball = ball_create(media);
@@ -340,7 +336,12 @@ void game_loop(void)
 		if (game->status == GAME_FINISHED)
 		{
 			SDL_Delay(3000);
-			game_reset();
+			game->level = level_next(game->level, gameSetup->renderer, media);
+			game->status = GAME_START;
+			player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
+			ball_destroy(game->ball);
+			game->ball = ball_create(media);
+			ball_position(game->ball, gameSetup->width / 2 - game->ball->ballRect.w / 2, player_top(game->player) - game->ball->ballRect.h);
 		}
 	}
 }
@@ -433,7 +434,7 @@ void game_event(void)
 		if (currentKeyStates[SDL_SCANCODE_L] && gameSetup->event.key.repeat == 0)
 		{
 			Level *newLevel = NULL;
-			newLevel = level_load_file("levels/level.txt", gameSetup->renderer, media);
+			newLevel = level_next(game->level, gameSetup->renderer, media);
 			if (newLevel != NULL)
 			{
 				level_destroy(game->level);

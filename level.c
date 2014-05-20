@@ -229,3 +229,41 @@ int level_count_bricks(Level *level)
 	printf("amount of bricks on level: %d\n", destroyableBricks);
 	return destroyableBricks;
 }
+
+Level* level_first(SDL_Renderer *renderer, GameMedia* media)
+{
+	Level *level = NULL;
+	int levelNumber = 1;
+	char levelPath[40];
+	sprintf(levelPath, LEVEL_NAME_BASE, levelNumber);
+	level = level_load_file(levelPath, renderer, media);
+	if (level == NULL)
+	{
+		level = level_create_random(levelNumber, 16, 20, media);
+	}
+	level->number = levelNumber;
+	return level;
+}
+
+Level* level_next(Level *level, SDL_Renderer *renderer, GameMedia* media)
+{
+	if (level == NULL)
+	{
+		return level;
+	}
+	int levelNumber = level->number + 1;
+	char levelPath[40];
+	if (levelNumber > LEVEL_MAX)
+	{
+		level = level_first(renderer, media);
+		return level;
+	}
+	sprintf(levelPath, LEVEL_NAME_BASE, levelNumber);
+	level = level_load_file(levelPath, renderer, media);
+	if (level == NULL)
+	{
+		level = level_create_random(levelNumber, 16, 20, media);
+	}
+	level->number = levelNumber;
+	return level;
+}

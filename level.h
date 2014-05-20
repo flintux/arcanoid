@@ -10,6 +10,8 @@
 #define LEVEL_ROW_MAX 20
 #define LEVEL_LINE_MAX 24
 #define LEVEL_SPEED_FACTOR 1
+#define LEVEL_NAME_BASE "levels/level_%02d.txt"
+#define LEVEL_MAX 10
 
 typedef struct Level{
 	int number;
@@ -44,6 +46,16 @@ Level* level_load_file(char *path, SDL_Renderer *renderer, GameMedia* media);
 counts destroyable bricks in level
 */
 int level_count_bricks(Level *level);
+
+/*
+loads first level
+*/
+Level* level_first(SDL_Renderer *renderer, GameMedia* media);
+
+/*
+loads next level according to actual level
+*/
+Level* level_next(Level *level, SDL_Renderer *renderer, GameMedia* media);
 
 #endif
 
