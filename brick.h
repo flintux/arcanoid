@@ -35,6 +35,26 @@ destroys a brick
 void brick_destroy(Brick *brick);
 
 /*
+returns the left coordinate of the brick
+*/
+int brick_left(Brick *brick);
+
+/*
+returns the right coordinate of the brick
+*/
+int brick_right(Brick *brick);
+
+/*
+returns the top coordinate of the brick
+*/
+int brick_top(Brick *brick);
+
+/*
+returns the bottom coordinate of the brick
+*/
+int brick_bottom(Brick *brick);
+
+/*
 draws the brick on the screen
 */
 void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media);

@@ -67,7 +67,7 @@ Game* game_create(GameSDLSetup *gameSetup)
 	player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
 
 	game->ball = ball_create(media);
-	ball_position(game->ball, gameSetup->width / 2 - game->ball->ballRect.w / 2, game->player->playerRect.y - game->ball->ballRect.h);
+	ball_position(game->ball, gameSetup->width / 2 - game->ball->ballRect.w / 2, player_top(game->player) - game->ball->ballRect.h);
 
 	return game;
 }
@@ -249,7 +249,7 @@ void ball_update(Ball *ball)
 			ball_destroy(ball);
 			ball = ball_create(media);
 			game->ball = ball;
-			ball_position(ball, gameSetup->width / 2 - ball->ballRect.w / 2, game->player->playerRect.y - ball->ballRect.h);
+			ball_position(ball, gameSetup->width / 2 - ball->ballRect.w / 2, player_top(game->player) - ball->ballRect.h);
 			return;
 		}
 		else

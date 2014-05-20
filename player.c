@@ -37,6 +37,25 @@ void player_destroy(Player *player)
 	}
 }
 
+int player_left(Player *player)
+{
+	return player->playerRect.x;
+}
+
+int player_right(Player *player)
+{
+	return player->playerRect.x + player->playerRect.w;
+}
+
+int player_top(Player *player)
+{
+	return player->playerRect.y;
+}
+
+int player_bottom(Player *player)
+{
+	return player->playerRect.y + player->playerRect.h;
+}
 
 void player_move(Player *player, Ball *ball, int ballMove, int screenWidth)
 {
@@ -44,14 +63,14 @@ void player_move(Player *player, Ball *ball, int ballMove, int screenWidth)
 	{
 		return;
 	}
-	if (player->direction == DIRECTION_RIGHT)	//move right
+	if (player->direction == DIRECTION_RIGHT)
 	{
-		if (player->playerRect.x + player->playerRect.w <= screenWidth)
+		if (player_right(player) <= screenWidth)
 		{
 			player->playerRect.x += 1;
 			if (!ballMove)
 			{
-				if (ball->ballRect.x + ball->ballRect.w / 2 < player->playerRect.x)
+				if (ball->ballRect.x + ball->ballRect.w / 2 < player_left(player))
 				{
 					ball->ballRect.x += 1;
 					ball->PositionX = (float)ball->ballRect.x;
@@ -61,11 +80,12 @@ void player_move(Player *player, Ball *ball, int ballMove, int screenWidth)
 	}
 	else if (player->direction == DIRECTION_LEFT) // move left
 	{
-		if (player->playerRect.x >= 0){
+		if (player_left(player) >= 0)
+		{
 			player->playerRect.x -= 1;
 			if (!ballMove)
 			{
-				if (ball->ballRect.x + ball->ballRect.w / 2 > player->playerRect.x + player->playerRect.w)
+				if (ball->ballRect.x + ball->ballRect.w / 2 > player_right(player))
 				{
 					ball->ballRect.x -= 1;
 					ball->PositionX = (float)ball->ballRect.x;

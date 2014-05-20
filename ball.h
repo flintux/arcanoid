@@ -62,6 +62,26 @@ destroys a ball and releases ressources
 void ball_destroy(Ball *ball);
 
 /*
+returns the left coordinate of the ball
+*/
+int ball_left(Ball *ball);
+
+/*
+returns the right coordinate of the ball
+*/
+int ball_right(Ball *ball);
+
+/*
+returns the top coordinate of the ball
+*/
+int ball_top(Ball *ball);
+
+/*
+returns the bottom coordinate of the ball
+*/
+int ball_bottom(Ball *ball);
+
+/*
 moves the ball
 */
 void ball_move(Ball *ball);

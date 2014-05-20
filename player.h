@@ -47,6 +47,25 @@ destroys a player
 */
 void player_destroy(Player *player);
 
+/*
+returns the left coordinate of the player
+*/
+int player_left(Player *player);
+
+/*
+returns the right coordinate of the player
+*/
+int player_right(Player *player);
+
+/*
+returns the top coordinate of the player
+*/
+int player_top(Player *player);
+
+/*
+returns the bottom coordinate of the player
+*/
+int player_bottom(Player *player);
 
 /*
 moves player and ball if required

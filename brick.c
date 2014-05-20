@@ -47,6 +47,25 @@ void brick_destroy(Brick *brick)
 	brick = NULL;
 }
 
+int brick_left(Brick *brick)
+{
+	return brick->rect.x;
+}
+
+int brick_right(Brick *brick)
+{
+	return brick->rect.x + brick->rect.w;
+}
+
+int brick_top(Brick *brick)
+{
+	return brick->rect.y;
+}
+
+int brick_bottom(Brick *brick)
+{
+	return brick->rect.y + brick->rect.h;
+}
 
 void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media)
 {

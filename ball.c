@@ -32,6 +32,26 @@ void ball_destroy(Ball *ball)
 	ball = NULL;
 }
 
+int ball_left(Ball *ball)
+{
+	return ball->ballRect.x;
+}
+
+int ball_right(Ball *ball)
+{
+	return ball->ballRect.x + ball->ballRect.w;
+}
+
+int ball_top(Ball *ball)
+{
+	return ball->ballRect.y;
+}
+
+int ball_bottom(Ball *ball)
+{
+	return ball->ballRect.y + ball->ballRect.h;
+}
+
 void ball_move(Ball *ball)
 {
 	/*move the ball
@@ -50,7 +70,7 @@ BallCollisionSide ball_check_wall_collision(Ball *ball, int borderRight, int bor
 	int window_w;
 	SDL_GetWindowSize(window, &window_w, &window_h);
 	printf("window size is %d x %d", window_w, window_h);*/
-	if (ball->ballRect.x <= 0) // left border
+	if (ball_left(ball) <= 0)
 	{
 		if (ball->ballSpeedX < 0)
 		{
@@ -59,7 +79,7 @@ BallCollisionSide ball_check_wall_collision(Ball *ball, int borderRight, int bor
 			puts("collision with left");
 		}
 	}
-	else if (ball->ballRect.x + ball->ballRect.w >= borderRight)  //right border
+	else if (ball_right(ball) >= borderRight)
 	{
 		if (ball->ballSpeedX > 0)
 		{
@@ -68,7 +88,7 @@ BallCollisionSide ball_check_wall_collision(Ball *ball, int borderRight, int bor
 			puts("collision with right");
 		}
 	}
-	else if (ball->ballRect.y <= 0) // top border
+	else if (ball_top(ball) <= 0) // top border
 	{
 		if (ball->ballSpeedY < 0)
 		{
@@ -77,7 +97,7 @@ BallCollisionSide ball_check_wall_collision(Ball *ball, int borderRight, int bor
 			puts("collision with top");
 		}
 	}
-	else if (ball->ballRect.y + ball->ballRect.h >= borderBottom)	// bottom border = you lost :-(
+	else if (ball_bottom(ball) >= borderBottom)
 	{
 		collision = COLLISION_SIDE_BOTTOM;
 		puts("collision with bottom");
@@ -89,7 +109,10 @@ BallCollisionSide ball_check_wall_collision(Ball *ball, int borderRight, int bor
 void ball_check_player_collision(Ball *ball, Player *player)
 {
 
-	if ((ball->ballRect.y + ball->ballRect.h >= player->playerRect.y) && (ball->ballRect.y + ball->ballRect.h < player->playerRect.y + 10) && ((ball->ballRect.x + ball->ballRect.w >= player->playerRect.x) && (ball->ballRect.x <= player->playerRect.x + player->playerRect.w)))
+	if (ball_bottom(ball) >= player_top(player) &&
+		ball_bottom(ball) < player_top(player) + 10 &&
+		ball_right(ball) >= player_left(player) &&
+		ball_left(ball) <= player_right(player))
 	{
 		if (ball->ballSpeedY > 0) /* only if ball is going down */
 		{
@@ -98,8 +121,8 @@ void ball_check_player_collision(Ball *ball, Player *player)
 			float xplayer;
 			float shift;
 			
-			xball = (float)ball->ballRect.x + (ball->ballRect.w / 2);
-			xplayer = (float)player->playerRect.x + (player->playerRect.w / 2);
+			xball = (float)ball_left(ball) + (ball->ballRect.w / 2);
+			xplayer = (float)player_left(player) + (player->playerRect.w / 2);
 
 			shift = xball - xplayer;
 
@@ -131,10 +154,10 @@ BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick)
 
 	if (ball->ballSpeedX > 0)	/*moving right to left*/
 	{
-		if (ball->ballRect.x + ball->ballRect.w == brick->rect.x + 1) /*we just entered the brick*/
+		if (ball_right(ball) == brick_left(brick) + 1) /*we just entered the brick*/
 		{
-			if ((ball->ballRect.y <= brick->rect.y + brick->rect.h - 1)
-				&& (ball->ballRect.y + ball->ballRect.h >= brick->rect.y + 1))
+			if (ball_top(ball) <= brick_bottom(brick) - 1 &&
+				ball_bottom(ball) >= brick_top(brick) + 1)
 			{
 				ball->ballSpeedX = -ball->ballSpeedX;
 				printf("ball collision on right side with brick\n");
@@ -144,10 +167,10 @@ BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick)
 	}
 	else /*moving left to right*/
 	{
-		if (ball->ballRect.x == brick->rect.x + brick->rect.w - 1) /*we just entered the brick*/
+		if (ball_left(ball) == brick_right(brick) - 1) /*we just entered the brick*/
 		{
-			if ((ball->ballRect.y <= brick->rect.y + brick->rect.h - 1)
-				&& (ball->ballRect.y + ball->ballRect.h >= brick->rect.y + 1))
+			if (ball_top(ball) <= brick_bottom(brick) - 1 &&
+				ball_bottom(ball) >= brick_top(brick) + 1)
 			{
 				ball->ballSpeedX = -ball->ballSpeedX;
 				printf("ball collision on left side with brick\n");
@@ -158,10 +181,10 @@ BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick)
 
 	if (ball->ballSpeedY > 0)	/*moving top to bottom*/
 	{
-		if (ball->ballRect.y + ball->ballRect.h == brick->rect.y + 1) /*we just entered the brick*/
+		if (ball_bottom(ball) == brick_top(brick) + 1) /*we just entered the brick*/
 		{
-			if ((ball->ballRect.x <= brick->rect.x + brick->rect.w - 1)
-				&& ((ball->ballRect.x + ball->ballRect.w) >= brick->rect.x + 1))
+			if (ball_left(ball) <= brick_right(brick) - 1 &&
+				ball_right(ball) >= brick_left(brick) + 1)
 			{
 				ball->ballSpeedY = -ball->ballSpeedY;
 				printf("ball collision on bottom side with brick\n");
@@ -171,10 +194,10 @@ BallCollisionSide ball_check_brick_collision(Ball *ball, Brick *brick)
 	}
 	else /*moving bottom to top*/
 	{
-		if (ball->ballRect.y == brick->rect.y + brick->rect.h - 1) /*we just entered the brick*/
+		if (ball_top(ball) == brick_bottom(brick) - 1) /*we just entered the brick*/
 		{
-			if ((ball->ballRect.x <= (brick->rect.x + brick->rect.w - 1))
-				&& ((ball->ballRect.x + ball->ballRect.w) >= brick->rect.x + 1))
+			if (ball_left(ball) <= brick_right(brick) - 1 &&
+				ball_right(ball) >= brick_left(brick) + 1)
 			{
 				ball->ballSpeedY = -ball->ballSpeedY;
 				printf("ball collision on top side with brick\n");
