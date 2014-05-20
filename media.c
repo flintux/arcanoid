@@ -111,7 +111,9 @@ GameMedia* media_load(SDL_Renderer *gameRenderer)
 	}
 	else
 	{
-		media->textGameOver = media_load_text(gameRenderer, media->font, MEDIA_GAME_OVER);
+		media->textGameOver = media_load_text(gameRenderer, media->font, MEDIA_TEXT_GAME_OVER);
+		media->textLevelComplete = media_load_text(gameRenderer, media->font, MEDIA_TEXT_LEVEL_COMPLETE);
+		media->textLiveLost = media_load_text(gameRenderer, media->font, MEDIA_TEXT_LIFE_LOST);
 	}
 	media->music = Mix_LoadMUS(MEDIA_MUSIC);
 	if (media->music == NULL)
@@ -144,6 +146,10 @@ void media_close(GameMedia *media)
 	SDL_DestroyTexture(media->brickSuperman);
 	media->brickSuperman = NULL;
 	SDL_DestroyTexture(media->textGameOver);
+	media->textGameOver = NULL;
+	SDL_DestroyTexture(media->textLevelComplete);
+	media->textGameOver = NULL;
+	SDL_DestroyTexture(media->textLiveLost);
 	media->textGameOver = NULL;
 	Mix_FreeMusic(media->music);
 	media->music = NULL;

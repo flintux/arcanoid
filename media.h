@@ -19,7 +19,9 @@
 #define MEDIA_BRICK_SUPERMAN "media/brick_superman.png"
 #define MEDIA_FONT "media/thickhea.ttf"
 #define MEDIA_FONT_SIZE 36
-#define MEDIA_GAME_OVER "Game Over, Loulou t'es null!!!"
+#define MEDIA_TEXT_GAME_OVER "Game Over, Loulou t'es null!!!"
+#define MEDIA_TEXT_LEVEL_COMPLETE "Congratulations, level complete!!!"
+#define MEDIA_TEXT_LIFE_LOST "Ouppssss, you missed!!!"
 #define MEDIA_MUSIC "media/music.ogg"
 #define MEDIA_FONT_WHITE_COLOR {255, 255, 255}
 
@@ -35,6 +37,8 @@ typedef struct GameMedia{
 	SDL_Texture *brickTripleTwo;
 	SDL_Texture *brickTripleThree;
 	SDL_Texture *textGameOver;
+	SDL_Texture *textLevelComplete;
+	SDL_Texture *textLiveLost;
 	Mix_Music *music;
 	TTF_Font *font;
 }GameMedia;
@@ -51,6 +55,7 @@ SDL_Texture* media_load_text(SDL_Renderer* gameRenderer, TTF_Font *gameFont, cha
 
 /*
 loads all media (pictures, fonts and music need by the game)
+every item loaded here should be freed in media_close
 */
 GameMedia* media_load(SDL_Renderer *gameRenderer);
 

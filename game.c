@@ -221,14 +221,8 @@ void ball_update(Ball *ball)
 	{
 		if (game->player->lifes > 0)
 		{
-			SDL_Delay(500);
+			game->status = GAME_LOST;
 			game->player->lifes--;
-			game->status = GAME_START;
-			player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
-			ball_destroy(ball);
-			ball = ball_create(media);
-			game->ball = ball;
-			ball_position(ball, gameSetup->width / 2 - ball->ballRect.w / 2, player_top(game->player) - ball->ballRect.h);
 			return;
 		}
 		else
@@ -334,6 +328,15 @@ void game_loop(void)
 			game->status = GAME_FINISHED;
 		}
 		game_draw();
+		if (game->status == GAME_LOST)
+		{
+			SDL_Delay(2000);
+			game->status = GAME_START;
+			player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
+			ball_destroy(game->ball);
+			game->ball = ball_create(media);
+			ball_position(game->ball, gameSetup->width / 2 - game->ball->ballRect.w / 2, player_top(game->player) - game->ball->ballRect.h);
+		}
 		if (game->status == GAME_FINISHED)
 		{
 			SDL_Delay(3000);
@@ -490,13 +493,23 @@ void game_draw(void)
 		textRect.y = (gameSetup->height - textRect.h) / 2;
 		SDL_RenderCopy(gameSetup->renderer, media->textGameOver, NULL, &textRect);
 	}
-	if (game->status == GAME_FINISHED)
+	/* render level complete */
+	else if (game->status == GAME_FINISHED)
 	{
 		SDL_Rect textRect;
-		SDL_QueryTexture(media->textGameOver, NULL, NULL, &textRect.w, &textRect.h);
+		SDL_QueryTexture(media->textLevelComplete, NULL, NULL, &textRect.w, &textRect.h);
 		textRect.x = (gameSetup->width - textRect.w) / 2;
 		textRect.y = (gameSetup->height - textRect.h) / 2;
-		SDL_RenderCopy(gameSetup->renderer, media->textGameOver, NULL, &textRect);
+		SDL_RenderCopy(gameSetup->renderer, media->textLevelComplete, NULL, &textRect);
+	}
+	/* render life lost */
+	else if (game->status == GAME_LOST)
+	{
+		SDL_Rect textRect;
+		SDL_QueryTexture(media->textLiveLost, NULL, NULL, &textRect.w, &textRect.h);
+		textRect.x = (gameSetup->width - textRect.w) / 2;
+		textRect.y = (gameSetup->height - textRect.h) / 2;
+		SDL_RenderCopy(gameSetup->renderer, media->textLiveLost, NULL, &textRect);
 	}
 	/* update screen */
 	SDL_RenderPresent(gameSetup->renderer);

@@ -22,6 +22,7 @@ typedef enum GameStatus{
 	GAME_PAUSE,
 	GAME_RUNNING,
 	GAME_FINISHED,
+	GAME_LOST,
 	GAME_END,
 	GAME_EXIT
 }GameStatus;
