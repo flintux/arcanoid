@@ -30,6 +30,7 @@ typedef struct Player
 	PlayerDirection direction;
 	unsigned int keyTimer;
 	int lifes;
+	int score;
 } Player;
 
 /*

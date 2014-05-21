@@ -3,9 +3,15 @@
 
 #include <SDL2/SDL.h>
 #include "media.h"
+#include "player.h"
 
 #define BRICK_HEIGHT 25
 #define BRICK_WIDTH 50
+#define SCORE_NORMAL 50
+#define SCORE_DUAL 25
+#define SCORE_TRIPLE 25
+
+typedef struct Player Player;
 
 typedef enum BrickKind{
 	BRICK_NONE,
@@ -59,6 +65,6 @@ void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media);
 /*
 updates the brick after a collision
 */
-int brick_collided(Brick *brick);
+int brick_collided(Brick *brick, Player *player);
 
 #endif

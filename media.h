@@ -22,6 +22,7 @@
 #define MEDIA_TEXT_GAME_OVER "Game Over, Loulou t'es null!!!"
 #define MEDIA_TEXT_LEVEL_COMPLETE "Congratulations, level complete!!!"
 #define MEDIA_TEXT_LIFE_LOST "Ouppssss, you missed!!!"
+#define MEDIA_TEXT_SCORE "00000"
 #define MEDIA_MUSIC "media/music.ogg"
 #define MEDIA_FONT_WHITE_COLOR {255, 255, 255}
 
@@ -39,6 +40,7 @@ typedef struct GameMedia{
 	SDL_Texture *textGameOver;
 	SDL_Texture *textLevelComplete;
 	SDL_Texture *textLiveLost;
+	SDL_Texture *textScore;
 	Mix_Music *music;
 	TTF_Font *font;
 }GameMedia;

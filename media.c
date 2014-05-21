@@ -114,6 +114,7 @@ GameMedia* media_load(SDL_Renderer *gameRenderer)
 		media->textGameOver = media_load_text(gameRenderer, media->font, MEDIA_TEXT_GAME_OVER);
 		media->textLevelComplete = media_load_text(gameRenderer, media->font, MEDIA_TEXT_LEVEL_COMPLETE);
 		media->textLiveLost = media_load_text(gameRenderer, media->font, MEDIA_TEXT_LIFE_LOST);
+		media->textScore = media_load_text(gameRenderer, media->font, MEDIA_TEXT_SCORE);
 	}
 	media->music = Mix_LoadMUS(MEDIA_MUSIC);
 	if (media->music == NULL)
@@ -151,6 +152,8 @@ void media_close(GameMedia *media)
 	media->textGameOver = NULL;
 	SDL_DestroyTexture(media->textLiveLost);
 	media->textGameOver = NULL;
+	SDL_DestroyTexture(media->textScore);
+	media->textScore = NULL;
 	Mix_FreeMusic(media->music);
 	media->music = NULL;
 	TTF_CloseFont(media->font);

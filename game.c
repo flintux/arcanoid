@@ -238,7 +238,7 @@ void ball_update(Ball *ball)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row]);
+						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row], game->player);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 						break;
@@ -251,7 +251,7 @@ void ball_update(Ball *ball)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row]);
+						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row], game->player);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -270,7 +270,7 @@ void ball_update(Ball *ball)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row]);
+						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row], game->player);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -282,7 +282,7 @@ void ball_update(Ball *ball)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
-						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row]);
+						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row], game->player);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
 					}
@@ -323,6 +323,7 @@ void game_loop(void)
 		{
 			game->status = GAME_FINISHED;
 		}
+		game_update_score();
 		game_draw();
 		if (game->status == GAME_LOST)
 		{
@@ -485,6 +486,14 @@ void game_draw(void)
 	SDL_RenderCopy(gameSetup->renderer, game->ball->ball, NULL, &game->ball->ballRect);
 	/* render player */
 	SDL_RenderCopy(gameSetup->renderer, game->player->sprite, NULL, &game->player->playerRect);
+	/* render score */
+	{
+		SDL_Rect textRect;
+		SDL_QueryTexture(media->textScore, NULL, NULL, &textRect.w, &textRect.h);
+		textRect.x = (gameSetup->width - textRect.w);
+		textRect.y = (gameSetup->height - textRect.h);
+		SDL_RenderCopy(gameSetup->renderer, media->textScore, NULL, &textRect);
+	}
 	/* render game over */
 	if (game->status == GAME_END)
 	{
@@ -514,4 +523,17 @@ void game_draw(void)
 	}
 	/* update screen */
 	SDL_RenderPresent(gameSetup->renderer);
+}
+
+void game_update_score(void)
+{
+	static int lastScore = 0;
+
+	if (lastScore != game->player->score)
+	{
+		char texte[10];
+		sprintf(texte, "%05d", game->player->score);
+		lastScore = game->player->score;
+		media->textScore = media_load_text(gameSetup->renderer, media->font, texte);
+	}
 }

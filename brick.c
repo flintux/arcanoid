@@ -109,17 +109,20 @@ void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media)
 	}
 }
 
-int brick_collided(Brick *brick)
+int brick_collided(Brick *brick, Player *player)
 {
 	switch (brick->kind)
 	{
-	case BRICK_NORMAL:
-	case BRICK_DUAL:
 	case BRICK_TRIPLE:
+		player->score += SCORE_TRIPLE;
+	case BRICK_DUAL:
+		player->score += SCORE_DUAL;
+	case BRICK_NORMAL:
 		brick->live--;
 		if (brick->live <= 0)
 		{
 			brick->kind = BRICK_NONE;
+			player->score += SCORE_NORMAL;
 			return 1;
 		}
 		break;

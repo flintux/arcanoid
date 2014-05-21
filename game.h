@@ -109,5 +109,10 @@ draws game elements into window
 */
 void game_draw(void);
 
+/*
+updates texture for game score if needed
+*/
+void game_update_score(void);
+
 #endif
 

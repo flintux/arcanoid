@@ -19,6 +19,7 @@ Player* player_create(GameMedia *media)
 	player->keyTimer = SDL_GetTicks();
 	player->direction = DIRECTION_NONE;
 	player->lifes = PLAYER_DEFAULT_LIFES;
+	player->score = 0;
 	return player;
 }
 
