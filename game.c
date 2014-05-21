@@ -534,6 +534,7 @@ void game_update_score(void)
 		char texte[10];
 		sprintf(texte, "%05d", game->player->score);
 		lastScore = game->player->score;
+		SDL_DestroyTexture(media->textScore);
 		media->textScore = media_load_text(gameSetup->renderer, media->font, texte);
 	}
 }
