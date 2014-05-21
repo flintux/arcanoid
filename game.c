@@ -54,9 +54,9 @@ Game* game_create(GameSDLSetup *gameSetup)
 	game->status = GAME_START;
 	game->level = level_first(gameSetup->renderer, media);
 	game->player = player_create(media);
-	player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
+	player_position(game->player, gameSetup->width / 2 - player_width(game->player) / 2, gameSetup->height - 3 * player_height(game->player));
 	game->ball = ball_create(media);
-	ball_position(game->ball, gameSetup->width / 2 - game->ball->ballRect.w / 2, player_top(game->player) - game->ball->ballRect.h);
+	ball_position(game->ball, gameSetup->width / 2 - ball_radius(game->ball), player_top(game->player) - ball_height(game->ball));
 	return game;
 }
 
@@ -230,24 +230,23 @@ void ball_update(Ball *ball)
 	ball_check_player_collision(ball, game->player);
 	if (ball->ballSpeedY > 0)
 	{
-		for (line = 0; line < game->level->lines && !(collision); line++)
+		for (line = 0; line < game->level->lines && !collision; line++)
 		{
 			if (ball->ballSpeedX > 0)
 			{
-				for (row = 0; row < game->level->rows && !(collision); row++)
+				for (row = 0; row < game->level->rows && !collision; row++)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
 						game->level->destroyableBricks -= brick_collided(game->level->wall[line][row], game->player);
 						collision = 1;
 						printf("destruction brick X: %i, Y: %i\n", row, line);
-						break;
 					}
 				}
 			}
 			else
 			{
-				for (row = game->level->rows - 1; row >= 0 && !(collision); row--)
+				for (row = game->level->rows - 1; row >= 0 && !collision; row--)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
@@ -261,12 +260,12 @@ void ball_update(Ball *ball)
 	}
 	else
 	{
-		for (line = game->level->lines - 1; line >= 0 && !(collision); line--)
+		for (line = game->level->lines - 1; line >= 0 && !collision; line--)
 		{
 			if (ball->ballSpeedX > 0)
 			{
 
-				for (row = 0; row < game->level->rows && !(collision); row++)
+				for (row = 0; row < game->level->rows && !collision; row++)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
@@ -278,7 +277,7 @@ void ball_update(Ball *ball)
 			}
 			else
 			{
-				for (row = game->level->rows - 1; row >= 0 && !(collision); row--)
+				for (row = game->level->rows - 1; row >= 0 && !collision; row--)
 				{
 					if (ball_check_brick_collision(ball, game->level->wall[line][row]) != COLLISION_SIDE_NONE)
 					{
@@ -329,20 +328,20 @@ void game_loop(void)
 		{
 			SDL_Delay(2000);
 			game->status = GAME_START;
-			player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
+			player_position(game->player, gameSetup->width / 2 - player_width(game->player) / 2, gameSetup->height - 3 * player_height(game->player));
 			ball_destroy(game->ball);
 			game->ball = ball_create(media);
-			ball_position(game->ball, gameSetup->width / 2 - game->ball->ballRect.w / 2, player_top(game->player) - game->ball->ballRect.h);
+			ball_position(game->ball, gameSetup->width / 2 - ball_radius(game->ball), player_top(game->player) - ball_height(game->ball));
 		}
 		if (game->status == GAME_FINISHED)
 		{
 			SDL_Delay(3000);
 			game->level = level_next(game->level, gameSetup->renderer, media);
 			game->status = GAME_START;
-			player_position(game->player, gameSetup->width / 2 - game->player->playerRect.w / 2, gameSetup->height - 40 - game->player->playerRect.h);
+			player_position(game->player, gameSetup->width / 2 - player_width(game->player) / 2, gameSetup->height - 3 * player_height(game->player));
 			ball_destroy(game->ball);
 			game->ball = ball_create(media);
-			ball_position(game->ball, gameSetup->width / 2 - game->ball->ballRect.w / 2, player_top(game->player) - game->ball->ballRect.h);
+			ball_position(game->ball, gameSetup->width / 2 - ball_radius(game->ball), player_top(game->player) - ball_height(game->ball));
 		}
 	}
 }

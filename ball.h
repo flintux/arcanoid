@@ -76,6 +76,26 @@ returns the bottom coordinate of the ball
 int ball_bottom(Ball *ball);
 
 /*
+returns the ball radius
+*/
+int ball_radius(Ball *ball);
+
+/*
+returns the ball height
+*/
+int ball_height(Ball *ball);
+
+/*
+returns the ball center X coordinate
+*/
+int ball_center_x(Ball *ball);
+
+/*
+returns the ball center Y coordinate
+*/
+int ball_center_y(Ball *ball);
+
+/*
 moves the ball
 */
 void ball_move(Ball *ball);

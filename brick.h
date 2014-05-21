@@ -58,6 +58,16 @@ returns the bottom coordinate of the brick
 int brick_bottom(Brick *brick);
 
 /*
+returns the height of the brick
+*/
+int brick_height(Brick *brick);
+
+/*
+returns the width coordinate of the brick
+*/
+int brick_width(Brick *brick);
+
+/*
 draws the brick on the screen
 */
 void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media);

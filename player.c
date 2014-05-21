@@ -52,6 +52,21 @@ int player_bottom(Player *player)
 	return player->playerRect.y + player->playerRect.h;
 }
 
+int player_height(Player *player)
+{
+	return player->playerRect.h;
+}
+
+int player_width(Player *player)
+{
+	return player->playerRect.w;
+}
+
+int player_center_x(Player *player)
+{
+	return player->playerRect.x + player->playerRect.w / 2;
+}
+
 void player_move(Player *player, Ball *ball, int ballMove, int screenWidth)
 {
 	if (!(player->keyTimer < SDL_GetTicks()))

@@ -64,6 +64,21 @@ returns the bottom coordinate of the player
 int player_bottom(Player *player);
 
 /*
+returns the height of the player
+*/
+int player_height(Player *player);
+
+/*
+returns the width of the player
+*/
+int player_width(Player *player);
+
+/*
+return player X center coordinate
+*/
+int player_center_x(Player *player);
+
+/*
 moves player and ball if required
 */
 void player_move(Player *player, Ball *ball, int ballMove, int screenWidth);

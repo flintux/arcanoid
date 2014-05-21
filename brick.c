@@ -67,6 +67,16 @@ int brick_bottom(Brick *brick)
 	return brick->rect.y + brick->rect.h;
 }
 
+int brick_height(Brick *brick)
+{
+	return brick->rect.h;
+}
+
+int brick_width(Brick *brick)
+{
+	return brick->rect.w;
+}
+
 void brick_draw(Brick *brick, SDL_Renderer *renderer, GameMedia *media)
 {
 	switch (brick->kind)

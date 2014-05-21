@@ -49,6 +49,26 @@ int ball_bottom(Ball *ball)
 	return ball->ballRect.y + ball->ballRect.h;
 }
 
+int ball_radius(Ball *ball)
+{
+	return ball->ballRect.w / 2;
+}
+
+int ball_height(Ball *ball)
+{
+	return ball->ballRect.h;
+}
+
+int ball_center_x(Ball *ball)
+{
+	return ball->ballRect.x + ball->ballRect.w / 2;
+}
+
+int ball_center_y(Ball *ball)
+{
+	return ball->ballRect.y + ball->ballRect.h / 2;
+}
+
 void ball_move(Ball *ball)
 {
 	/*move the ball
@@ -108,13 +128,9 @@ void ball_check_player_collision(Ball *ball, Player *player)
 	{
 		if (ball->ballSpeedY > 0) /* only if ball is going down */
 		{
-			float xball;
-			float xplayer;
 			float shift;
-			xball = (float)ball_left(ball) + (ball->ballRect.w / 2);
-			xplayer = (float)player_left(player) + (player->playerRect.w / 2);
-			shift = xball - xplayer;
-			ball->ballSpeedX = -(float)(shift / (player->playerRect.w / 2 + ball->ballRect.w / 2))*BALL_SPEED_X_FACTOR*ball->actualSpeed;
+			shift = (float)ball_center_x(ball) - player_center_x(player);
+			ball->ballSpeedX = -(float)(shift / (player_width(player) / 2 + ball_radius(ball)))*BALL_SPEED_X_FACTOR*ball->actualSpeed;
 			if (ball->ballSpeedX > 0)
 			{
 				ball->ballSpeedY = (float)(2.0 - ball->ballSpeedX) * ball->actualSpeed;
